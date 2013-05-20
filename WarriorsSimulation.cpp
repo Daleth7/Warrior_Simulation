@@ -2,7 +2,8 @@
 //
 
 #include "armor.h"
-#include <windows.h>
+#include <windows.h>   //Will we actually implement window's methods for anything? 
+                       //   Not for i/o right? Because you already implemented iostream for i/o?
 
 void TestArmor(Armor & a,int n)
 {
