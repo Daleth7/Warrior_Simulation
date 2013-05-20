@@ -24,8 +24,8 @@ int main()
 	// constructor: Armor(int a[] (% avoided), int b[](durability), double w=0, int camo=0, string nm = "not specified")
 
 	CraftArmor temporaryArmor = { 0, 15, 5, 5,
-					  0, 15, 5, 10,
-					  5.5, 25, 
+				      0, 15, 5, 10,
+				      5.5, 25, 
 					  "leather armor" };
 
 	Armor leather(temporaryArmor);
