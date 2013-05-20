@@ -1,9 +1,11 @@
 // WarriorsSimulation.cpp : Defines the entry point for the console application.
 //
 
-#include "armor.h"
-#include <windows.h>   //Will we actually implement window's methods for anything? 
+#include "armor.h"     //Will we actually implement window's methods for anything? 
                        //   Not for i/o right? Because you already implemented iostream for i/o?
+                       // answer: well I just added it because a Sleep method will be usefull for slowing down the
+                       // output so that a human being can see it. We can probably use annother technique
+                       // that works better though.
 
 void TestArmor(Armor & a,int n)
 {
