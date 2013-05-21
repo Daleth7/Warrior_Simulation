@@ -25,7 +25,7 @@ bool operator==(const Warrior& lhs,const Warrior& rhs){
 	;
 		auto liter = left.begin();
 		auto riter = right.begin();
-	for(; liter != left.end(); ++liter){
+	for(; liter != left.end(); ++liter, ++riter){
 		if(*liter != *riter)
 			return false;
 	}
