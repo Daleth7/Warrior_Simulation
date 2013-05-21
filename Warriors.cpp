@@ -9,7 +9,7 @@ using std::string;
 	//Global constants
 const double
 	__gravity(9.81),
-	__average_bfat_ratio(0.25)
+	__average_bfat_ratio(0.15)
 ;
 
 bool operator==(const Warrior& lhs,const Warrior& rhs){
