@@ -24,7 +24,7 @@ class Environment
 
     protected:
         unsigned short disadvantage;
-        const std::string ecosytemName , weatherName;
+        const const std::string ecosytemName , weatherName;
 };
 
 class Desert;
