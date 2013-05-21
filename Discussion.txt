@@ -1,3 +1,13 @@
 Oh, hey look, a IDC (In Delay-time Chat)! >_>
 
 Now what
+
+Well I am currently working on reworking the environment header then making the source file for the classes.
+I am going to make it into 3 classes instead of like 15. What all environmental factors do you guys think I
+should factor in? So far I am thinking Ecosystem( where the ba)ttle takes place ), Weather( what the weather 
+is like ) and the time of day( night/day ). Certain "Warriors" will benefit better in special scenarios than
+others for example a modern soldier would do much better at night than a medieval soldier since we have night-
+vision and someone who is from a certian area will know the landscape and will do slightly better while fighting
+there compared to someone who is not naturally from that area ex a knight fighting in a desert vs someone that is
+from the desert like a bandit or something.
+-Giblit
