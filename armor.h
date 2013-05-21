@@ -12,6 +12,30 @@ struct CraftArmor {
 	double WEIGHT;
 	int CAMO;
 	string NAME;
+	
+	void Craft()
+	{
+		cout << "What is the name of the armor?\nname: ";
+		cin >> NAME;
+
+		cout << "How heavy is the armor? (kilograms)\nweight: "; 
+		cin >> WEIGHT;
+
+		cout << "How good is the camouflage? 0% no camo, 100% invisible\ncamo: "; 
+		cin >> CAMO;
+
+		string pieces[4] = { "head", "chest", "arms", "legs" };
+		
+		cout << "What is the % of damage avoided each attack\n"
+			<<  "and how good is the durability of the armor?\n";
+		for(int i = 0; i < 4; i++)
+		{
+			cout << "avoided, " << pieces[i] << ": ";
+			cin >> AVOIDED[i];
+			cout << "durability, " << pieces[i] << ": ";
+			cin >> DURABILITY[i];
+		}
+	}
 };
 
 class Armor
