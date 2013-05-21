@@ -1,5 +1,5 @@
 #ifndef WARRIORS_H
-	#define WARRIORS_H
+#define WARRIORS_H
 	
 #include <list>
 #include <map>
