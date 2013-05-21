@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <initializer_list>
 
 #include "Weapons.h"
 #include "Armor.h"
@@ -11,9 +12,10 @@
 using std::list;
 using std::map;
 using std::string;
+using std::initializer_list;
 	//Strongly typed because these should never 
 	//   be compared with primitive types
-	//   These are associated with certain,
+	//These are associated with certain,
 	//   set attribute values
 enum class W_Template{
 	Strongman,
@@ -54,58 +56,63 @@ class Warrior{
 		Warrior Defend();
 		Warrior Counterattack();
 		Warrior Run();
-		
-		
 			//Read-only functions
 		bool Alive()const;
 		list<double> Attributes()const;
 		string Name()const;
 		Condition_t Status()const;
-		
 			//Initializes attribute variables with
-			//   a guess at the median and no
-			//   equipment
+			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
 		explicit Warrior();
-		Warrior(W_Template);
-			//Set attributes manually
-			//   order follows member double variables
-		Warrior(
-			double,double,double,double,
-			double,double,double,double
-		);
+		Warrior(W_Template,string);
+			//Set attributes manually;
+			//   order follows member double variables;
+			//   0 will indicate attribute value to be 
+			//   randomized
+		Warrior(initializer_list<double>,string);
 			//Deal with pointers
 		Warrior(const Warrior&);
 		Warrior& operator=(const Warrior&);
 			//Deallocate memory from list objects
 		~Warrior();
+	protected:
+		double Generate_Rand_Val(const int&);
 	private:
 		string __name;
 		bool __alive;
 		double
 				//Successful hits per attempt
-				//   for simplicity measured as a ratio
+				//   measured as a ratio
 			__accuracy,
+				//Successful runs per attempt
+				//   measured as a ratio
+			__evasion_chance,
 				//IQ
 			__intelligence,
+				//Measured in kilograms
+			__mass,
+				//Measured in meters
+			__height,
 				//Newtons(force) delivered per punch
 				//   useful for actions involving thrusting arms
 			__strength,
-				//How many thrusts delivered per minute
+				//How many thrusts delivered per second
 			__swiftness,
 				//Energy reserve
-				//   for simplicity measured in Joules
+				//   measured in Joules
 			__stamina,
 				//Stamina used up per hour
-				//   for simplicity measured in Joules/hour
+				//   measured in Joules/hour
 			__hunger,
 				//Maximum amount of time warrior can stay 
 				//   awake before fainting
 				//   equivalent to __stamina/__hunger
-		//  __time_limit,
-				//Measured in meters/hour
+		//	__time_limit,
+				//Measured in meters/second
 			__speed,
-				//???
+				//How much warrior can stand before being broken
+				//   measured in ???
 			__mental_fortitude
 		;
 			//Only stores pointers to objects on the heap
