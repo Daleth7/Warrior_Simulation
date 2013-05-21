@@ -16,7 +16,7 @@ To-Do List:
 --Warrior(?)
 
 -Gilbit:
---(?)
+--Environment class
 
 -(?)
 --Environment class
