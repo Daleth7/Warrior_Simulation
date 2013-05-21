@@ -92,6 +92,6 @@ Warrior& operator=(const Warrior&);
 ~Warrior();
 
 double Generate_Rand_Val(const int& max_value){
-	return max_value - rand()%max_value + double(rand()%RAND_MAX)/RAND_MAX;
+	return max_value - rand()%max_value - double(rand()%RAND_MAX)/RAND_MAX;
 }
 /*****************End Member functions of the Warrior Class************/
