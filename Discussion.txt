@@ -113,3 +113,4 @@ Mother::Mother( const Son &s ) : a( s.c ) , b( s.d ){} //That was me being dumb 
 
 Also I am currently working on the terrain header now. I will put it where the old environment is now but I am still
 working on it.
+-Giblit
