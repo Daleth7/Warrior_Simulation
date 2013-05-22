@@ -114,3 +114,10 @@ Mother::Mother( const Son &s ) : a( s.c ) , b( s.d ){} //That was me being dumb 
 Also I am currently working on the terrain header now. I will put it where the old environment is now but I am still
 working on it.
 -Giblit
+
+Why would you need the base class to modify the contents of the derived class? Making c and d public will effectively 
+destroy your encapsulation as any one of us or the multiple functions will be able to modify the variables in ways 
+you did not intend. From what you are doing, you just need a copy constructor for the derived class, not 
+parameter-passing in the base class. Remember that when you make a derived class object, it will contain the base 
+class but the reverse is not true.
+~Daleth~
