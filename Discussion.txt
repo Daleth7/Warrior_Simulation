@@ -121,3 +121,6 @@ you did not intend. From what you are doing, you just need a copy constructor fo
 parameter-passing in the base class. Remember that when you make a derived class object, it will contain the base 
 class but the reverse is not true.
 ~Daleth~
+
+Ah that makes more sense I was thinking that it went both ways just started using derived classes the other day.
+-Giblit
