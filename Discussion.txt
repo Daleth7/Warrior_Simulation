@@ -79,3 +79,12 @@ on the size of the hill/mountain it takes so long to get to the top..Once at the
 slightly lower due to the fact they may have less stamina from their trip up the hill.
 Do those seem like valid statements based on the terrain they are currently at?
 -Giblit
+
+-Mind showing a sample code of what you are describing, i.e. initializing the members with a protected member?
+-The interactions between the environment and the warriors should be kept separate in an interaction/event manager. Otherwise,
+the two classes would be illogically coupled, even though a tornado shouldn't care if there is a band of warriors
+in its way; it just goes with the cell flow. Remember that classes should be designed in such a way that they
+do not need to care if others exist, or in other words, to be as modular as possible.
+-You can get started with that interaction/event class because nobody else has taken up the responsibility. I'll make
+a modification public function you can use to change the attribute values of the warriors according to the conditions.
+~Daleth~
