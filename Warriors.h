@@ -1,3 +1,7 @@
+/**
+	-party class
+	-warrior factory method
+**/
 #ifndef WARRIORS_H
 #define WARRIORS_H
 	
@@ -13,13 +17,26 @@ using std::list;
 using std::map;
 using std::string;
 using std::initializer_list;
-	//Strongly typed because these should never 
-	//   be compared with primitive types
+//Strongly typed because these should never 
+//   be compared with primitive types
+	//These are associated with a set of equipment
+	//   and one Attr_Template
+enum class W_Template{
+	Knight,
+	Demolitionist,
+	Medic,
+	Sniper,
+	Rogue,
+	Archer,
+	/*...*/
+};
 	//These are associated with certain,
 	//   set attribute values
-enum class W_Template{
+enum class Attr_Template{
 	Strongman,
 	Sharpeye,
+	Obese,
+	Athlete
 	/*...*/
 };
 	//These are associated with certain attribute drops
@@ -51,6 +68,8 @@ class Warrior{
 			//   -call respective defend/counterattack
 			//   -swap change in stamina or alive variables
 			//   between copy and original objects
+			//   -Check hit points of both warriors and determine
+			//   if the warrior is dead or not
 		void Attack(Warrior&, int=0);
 			//Return a copy with modified attribute values
 		Warrior Defend();
@@ -71,11 +90,16 @@ class Warrior{
 		void Unequip();
 		void Unequip(Weapon_t=NONE, Armor_t=NONE)
 		void Store(const Weapon*=nullptr, const Armor*=nullptr);
+			//In the event that the warrior's attributes are temporarily changed;
+			//Takes in a set of changes and adds those changes to the returned
+			//   Warrior object
+		Warrior Temporary(const list<double>&);
+		void SetCondition(Condition_t);
 			//Initializes attribute variables with
 			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
 		explicit Warrior();
-		Warrior(W_Template,const string&);
+		Warrior(Attr_Template,const string&);
 			//Set attributes manually;
 			//   order follows member double variables;
 			//   0 will indicate attribute value to be 
@@ -89,6 +113,8 @@ class Warrior{
 	protected:
 		double Generate_Rand_Val(const int&);
 		void Swap_Var(const Warrior&);
+			//Make sure the attributes are within the correct range
+		void Check();
 	private:
 		string __name;
 		bool __alive;
@@ -124,7 +150,10 @@ class Warrior{
 			__speed,
 				//How much warrior can stand before being broken
 				//   measured in ???
-			__mental_fortitude
+			__mental_fortitude,
+				//The likeliness for others to follow this warrior
+				//   measured as a ratio of persons per group of persons
+			__amicability
 		;
 			//Only stores pointers to objects on the heap
 			//   alternative: cow_ptr<T>
@@ -140,6 +169,18 @@ class Warrior{
 			//   "Ammunition_t" is a placeholder for an enum
 		map<Ammunition_t,unsigned> __available_amm;
 		Condition_t __condition;
+			//Literal hit points; how many sharp blows a certain body part 
+			//   can sustain before becoming a hinderance; for
+			//   consistency, these will be measured in joules
+		unsigned
+		                  __head,
+		                  __neck,
+		 __left_shoulder, __chest, __right_shoulder,
+		 __left_arm,     __stomach,     __right_arm, 
+		 __left_hand,     __groin,     __right_hand,
+		           __left_leg, __right_leg,
+		           __left_foot, __right_foot
+		;
 };
 	
 #endif
