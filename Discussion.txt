@@ -58,3 +58,24 @@ of successfully hitting the target
 -Separating the amount of endurance for each body part sounds like a good idea; definitely the kind of thing that 
 should be implemented. I'll get on that right now.
 ~Daleth~
+
+Sounds like a plan.
+Sorry I meant initializing the variables of the Main class by using a protected item in the other class. I was trying
+to do this because I was trying to do default classes but I could just make them public so they can be modified which
+will probably be best all around and that way I can use them as derived classes and then have a couple of defaults.
+I was reading up on "Battles and the factors" at https://en.wikipedia.org/wiki/Battle
+The major factors to winning a battle seem to be: Number of soldiers, number of equipment, skill of commander(tactics?),
+terrain advantages (says it's the most important factor), morale is > disipline of soldiers most of the time, types of
+weapons and types of armor.
+So I will work on the terrains like this if group 1 is at the top of a hill and group 2 is at the bottom of the hill
+then group 1 will have a slight advantage in camoflauge, accuracy(easier to shoot downward?) and group 2 will have
+less strength, swiftness, stamina, more hunger, less speed and less fortitude? I realized that weather probably was a
+bad factor to use because that would affect both sides. Unless you wanted to give both sides a disadvantage based on a
+random chance of something happening to each person like each side has a 1/1000 chance of getting knocked down by wind
+on flat ground and if one side is climbing a hill they have a 1/100 chance of being knocked down. When they get knocked
+down that would increase their chances of being hit since they would have nothing to hide behind like a boulder or tree.
+The climbing method could be something that is used based on their speed. While climbing the speed is decreased and based
+on the size of the hill/mountain it takes so long to get to the top..Once at the top their speed returns to normal maybe
+slightly lower due to the fact they may have less stamina from their trip up the hill.
+Do those seem like valid statements based on the terrain they are currently at?
+-Giblit
