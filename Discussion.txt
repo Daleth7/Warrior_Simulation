@@ -40,3 +40,21 @@ Back to the group of soldiers...I think different groups might have different le
 Some groups just do their own thing like barbarians I believe. Other groups though are more organized which could lead
 to a slight advantage in the battle.
 -Giblit
+
+-Ah, okay I see, so you meant landscape. And what do you mean you had trouble initializing the protected variables?
+-Wait a little longer on the weapon class. If we can get FredBill to make an account, we'll save a lot of work by adding his
+file to the project.
+-My enum class for Strongman and Sharpeye are really more descriptions for the attribute values, not the particular skill
+of the warrior. Something like a demolitionist or a medic would describe more the equipment the warrior would have, and
+my W_Template enum would be part of what describes that specialty. For example, a sniper could be described as having
+a sniper rilfe, scope, goggles, camoflague, ammunition pack, and the attributes of the Sharpeye W_Template. But I think
+can create another enum for the warrior specialties. Sounds like a good idea for a factory method, which I still need
+to practice.
+-As for the whole band thing, that can be a different class with its own building methods, because my class is for
+individual warriors. I might try to incorporate the party/band/team thing after I'm done defining the warrior class.
+-leadership sounds like an innate characteristic I can add as a private variable
+-The accuracy of the warrior is defined to be a general case: for every attempt the warrior makes, what is his/her chance
+of successfully hitting the target
+-Separating the amount of endurance for each body part sounds like a good idea; definitely the kind of thing that 
+should be implemented. I'll get on that right now.
+~Daleth~
