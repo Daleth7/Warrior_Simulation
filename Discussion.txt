@@ -11,3 +11,14 @@ vision and someone who is from a certian area will know the landscape and will d
 there compared to someone who is not naturally from that area ex a knight fighting in a desert vs someone that is
 from the desert like a bandit or something.
 -Giblit
+
+-There is currently nothing about your ecosystem class that resembles the logic of an ecosystem, FYI:
+http://www.merriam-webster.com/dictionary/ecosystem
+-Modern soldiers do not have tactical advantage over a medieval soldier if they are without those precious goggles. 
+Therefore, that should not be an innate characteristic.
+-Night/Day sounds like a good idea. You can google types of weather and landscapes to get other types of environment
+factors.
+-How exactly are your three classes going to interact? I would have derived at least Weather and Landscape from
+environment.
+-Somebody help me figure out what's missing from my Warrior class?
+~Daleth~
