@@ -61,6 +61,16 @@ class Warrior{
 		list<double> Attributes()const;
 		string Name()const;
 		Condition_t Status()const;
+			//Inventory functions
+			//   using "Weapon_t" and "Armor_T" as a 
+			//   placeholder for enums because I cannot
+			//   figure out how to implement choices without
+			//   one
+		void Equip(const Weapon*=nullptr, const Armor*=nullptr);
+		void Equip_from_Inventory(Weapon_t=NONE);
+		void Unequip();
+		void Unequip(Weapon_t=NONE, Armor_t=NONE)
+		void Store(const Weapon*=nullptr, const Armor*=nullptr);
 			//Initializes attribute variables with
 			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
