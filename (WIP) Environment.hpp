@@ -1,55 +1,29 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
-#include <string>   //std::string
-#include <iostream> //std::ostream
-#include "warrior.h" /**So I can later make certian warriors*
-                       *better with different environments. **/
 
-enum condition { Desert , Woodland , Grassland , Highland , Artic , Tundra ,
- Rainforest , Raining = 0 , Windy , Snowing , Hailing , Normal };
+#include <string>
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+enum default_terrain { Forest , Jungle , Plain , Mountain , Hill , Rocky };
 
-namespace NAMES
+class Terrain
 {
-    const std::string ecosytem[ 7 ] = { "Desert" , "Woodland" , "Grassland" ,
-     "Highland" , "Artic" , "Tundra" , "Rainforest" } ,
-    weather[ 5 ] = { "Raining" , "Windy" , "Snowing" , "Hailing" , "Normal" };
-}
-
-class Ecosystem;
-class Weather;
-
-class Environment
-{
-    friend std::ostream& operator<< ( std::ostream& , const Environment& );
-    public:
-        Environment( void );
-        Environment( const Ecosystem& , const Weather& );
-        Environment( const condition& , const condition& );
-    private:
-        //unsigned short disadvantage;
-        const std::string ecosytemName , weatherName;
-};
-
-class Ecosystem
-{
-    friend Environment;
-    friend std::ostream& operator<< ( std::ostream& , const Ecosystem& );
 public:
-    Ecosystem( void );
-    Ecosystem( const condition& );
-private:
-    const std::string name;
-};
+    Terrain( void );
+    Terrain( const default_terrain& );
+    const unsigned short generate_random_number( const unsigned short& , const unsigned short& ) const;
+    void generate_trees( void );
+    void generate_rocks( void );
+    friend std::ostream& operator<< ( std::ostream& , const Terrain& );
 
-class Weather
-{
-    friend Environment;
-    friend std::ostream& operator<< ( std::ostream& , const Weather& );
-public:
-    Weather( void );
-    Weather( const condition& );
-private:
-    const std::string name;
+    std::string terrain_name;
+    unsigned short elevation , trees , rocks ,
+    min_tree_width , max_tree_width ,
+    min_tree_height , max_tree_height ,
+    min_rock_width , max_rock_width ,
+    min_rock_height , max_rock_height;
+    std::vector<std::pair<unsigned short , unsigned short> > tree_info , rock_info;
 };
-
 #endif // ENVIRONMENT_H
