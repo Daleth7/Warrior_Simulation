@@ -123,4 +123,5 @@ class but the reverse is not true.
 ~Daleth~
 
 Ah that makes more sense I was thinking that it went both ways just started using derived classes the other day.
+Lol at the solider type "obese"
 -Giblit
