@@ -89,7 +89,7 @@ do not need to care if others exist, or in other words, to be as modular as poss
 a modification public function you can use to change the attribute values of the warriors according to the conditions.
 ~Daleth~
 
-[s]Oh yeah I meant like warrior.setTerrain( const Terrain& ) then set the stuff there after the terrains are set up.[s]
+[s]Oh yeah I meant like warrior.setTerrain( const Terrain& ) then set the stuff there after the terrains are set up.[/s]
 I can start an event class but wouldn't that be best to work on last after we know all the variables? I can put in the
 known varialbs that we have currently.
 And the thing I was doing was just being dumb it was trying to access a protected item outside of the scope like this
