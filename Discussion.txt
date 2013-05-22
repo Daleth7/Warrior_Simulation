@@ -22,3 +22,21 @@ factors.
 environment.
 -Somebody help me figure out what's missing from my Warrior class?
 ~Daleth~
+
+Oh yes I meant landscape not ecosystem not sure what I was thinking. They were interacting as derived classes origonally
+but I was trying to make the variables protected and it would not work when I was trying to initialize them on the other
+environment class but I suppose I could of just made them public variables instead on the landscape/weather environment.
+Also I think it will be best if we have a weapon class before a environment class so I think I will start working on
+that since it seems to be only me , you , and possibly filiprei.
+
+Are you going to include like a warband/group of soliders to your class? For example a group of bandits could have
+a sniper , a demolionist , a medic , and foot soldier. Oh and I think possibly adding a medic to the list where you have
+strongmen / sharpeye. The medic won't "Heal" them but could stop bleeding, set bones ( if they are broken from a
+hand-hand fight, tripping, getting hit by vehicle or something else ), supply crutches. Just suggestions on what a medic
+could possibly do. Also, with your accuracy is that how accurate they are to hit a target or like a specific limb?
+Someone could hit a guy 90% of the time but would not necessarly mean they are all head or body shots they could be
+like arm/leg shots. Depending on the area where they are hit I would assume the person gets hurt more or incapitated more.
+Back to the group of soldiers...I think different groups might have different leadership skills/tactics for the battle.
+Some groups just do their own thing like barbarians I believe. Other groups though are more organized which could lead
+to a slight advantage in the battle.
+-Giblit
