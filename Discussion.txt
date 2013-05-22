@@ -88,3 +88,25 @@ do not need to care if others exist, or in other words, to be as modular as poss
 -You can get started with that interaction/event class because nobody else has taken up the responsibility. I'll make
 a modification public function you can use to change the attribute values of the warriors according to the conditions.
 ~Daleth~
+
+Oh yeah I meant like warrior.setTerrain( const Terrain& ) then set the stuff there after the terrains are set up.
+And the thing I was doing was just being dumb it was trying to access a protected item outside of the scope like this
+class Mother
+{
+public:
+    Mother( const Son& );
+protected:
+    short a , b;
+}
+class Son : public Mother
+{
+public:
+    Son( short , short );
+protected:
+    short c , d;
+}
+
+Mother::Mother( const Son &s ) : a( s.c ) , b( s.d ){} //That was me being dumb trying to access a protected
+
+Also I am currently working on the terrain header now. I will put it where the old environment is now but I am still
+working on it.
