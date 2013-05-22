@@ -42,6 +42,12 @@ list<double> Attributes()const;
 string Name()const;
 Condition_t Status()const;
 
+void Equip(const Weapon* newwep, const Armor* newarm);
+void Equip_from_Inventory(Weapon_t choice);
+void Unequip();
+void Unequip(Weapon_t choice, Armor_t choice)
+void Store(const Weapon* newwep, const Armor* newarm);
+
 Warrior():
 	alive(true)
 {
@@ -89,7 +95,17 @@ Warrior(initializer_list<double>);
 Warrior(const Warrior&);
 Warrior& operator=(const Warrior&);
 
-~Warrior();
+~Warrior(){
+		//These should be deleted iff we use smart pointers
+	for(auto iter = __equippedw.begin(); iter != __equippedw.end(); iter++)
+		delete iter;
+	for(auto iter = __ownedw.begin(); iter != __ownedw.end(); iter++)
+		delete iter;
+	for(auto iter = __equippeda.begin(); iter != __equippeda.end(); iter++)
+		delete iter;
+	for(auto iter = __owneda.begin(); iter != __owneda.end(); iter++)
+		delete iter;
+}
 
 double Generate_Rand_Val(const int& max_value){
 	return max_value - rand()%max_value - double(rand()%RAND_MAX)/RAND_MAX;
