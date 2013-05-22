@@ -75,12 +75,12 @@ class Warrior{
 			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
 		explicit Warrior();
-		Warrior(W_Template,string);
+		Warrior(W_Template,const string&);
 			//Set attributes manually;
 			//   order follows member double variables;
 			//   0 will indicate attribute value to be 
 			//   randomized
-		Warrior(initializer_list<double>,string);
+		Warrior(const initializer_list<double>&,const string&);
 			//Deal with pointers
 		Warrior(const Warrior&);
 		Warrior& operator=(const Warrior&);
@@ -88,6 +88,7 @@ class Warrior{
 		~Warrior();
 	protected:
 		double Generate_Rand_Val(const int&);
+		void Swap_Var(const Warrior&);
 	private:
 		string __name;
 		bool __alive;
@@ -119,7 +120,7 @@ class Warrior{
 				//   awake before fainting
 				//   equivalent to __stamina/__hunger
 		//	__time_limit,
-				//Measured in meters/second
+				//Measured in kilometers/hour
 			__speed,
 				//How much warrior can stand before being broken
 				//   measured in ???
