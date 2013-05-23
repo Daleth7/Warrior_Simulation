@@ -3,7 +3,8 @@
 int main()
 {
     srand( ( unsigned ) time( NULL ) );
-    Terrain ter1 , ter2;
+    Terrain ter1 , ter2 , ter3( Mountain );
+    ter2.terrain_name = "Test";
     ter2.trees = 3;
     ter2.rocks = 15;
     ter2.min_tree_width = 1;
@@ -18,6 +19,7 @@ int main()
     ter2.generate_trees();
     std::cout << ter1 << std::endl;
     std::cout << ter2 << std::endl;
+    std::cout << ter3 << std::endl;
     std::cout << "Size of all trees" << std::endl;
     for( const auto &it : ter2.tree_info )
     {
