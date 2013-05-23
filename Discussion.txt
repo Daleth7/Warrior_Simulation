@@ -1,4 +1,4 @@
-Oh, hey look, a IDC (In Delay-time Chat)! >_>
+Oh, hey look, an IDC (In Delay-time Chat)! >_>
 
 Now what
 
@@ -183,3 +183,14 @@ Oh I knew about the scoping did not know it was illegal to compare like that I s
 also because I am using a switch with them aswell I was under the impression all enums iterated the values thanks for
 the information.
 -Giblit
+
+"Do you think those are good variables that I used for the terrain or should I remove some of them? Also can you think
+of anymore I could add? "
+-Why are all of your important variables public? That's like allowing someone to mess with the number of trees there
+are in the forest or arbitrarily changing wind speeds of a storm when in reality there is no such control.
+-You could condense all of the trees, rocks, etc. into a single obstacle member variable and that variable would be a
+class of its own with factors like weight--if a warrior wanted to throw a rock--height--if an arrow gets caught
+in a tree's branches--brittleness--if a bullet can shatter a rock versus a boulder--etc.
+-What are tree_info and rock_info supposed to inform us?
+-You could include the slickness of the ground, temperature, wind speed, cloudiness, sunniness, softness of the ground,
+humidity, et cetera, et cetera.
