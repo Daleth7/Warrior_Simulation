@@ -200,3 +200,5 @@ working on that so now there are three ways to call the terrain: Terrain()/*defa
 /*Selected Default values*/, Terrain( trees , logs , boulders, rocks , vines ).
 Also those are very good idea's I have the height and width of the objects currently (that is what tree and rock _info are)
 I will see about adding those new features now.
+[edit]I almost forgot about different types of rocks/trees.....[/edit]
+-Giblit
