@@ -7,10 +7,16 @@
 #include <cstdlib>
 #include <string>
 #include <initializer_list>
+#include <algorithm>
+#include <utility>
+#include <iterator>
 
 using std::list;
 using std::string;
 using std::initializer_list;
+using std::transform;
+using std::make_pair;
+using std::inserter;
 	//Global constants for use in multiple functions
 const double
 	__gravity(9.81),
@@ -518,17 +524,10 @@ void Warrior::Swap_Var(const Warrior& original){
 	__speed              = original.__speed;
 	__mental_fortitude   = original.__mental_fortitude;
 	__amicability        = original.__amicability;
-	//   __equippedw
-	__equippedw.clear();
-	__equippedw.resize(original.__equippedw.size());
-	for(
-		auto iter_this = __equippedw.begin(), iter_o = original.__equippedw.begin();
-		iter_o != original.__equippedw.end();
-		++iter_this, ++iter_o
-	){
-		iter_this = new Weapon;
-		(*iter_this) = (*iter_o);
-	}
+	//   __melee, __throwing, __ranged
+	*__melee = original.__melee;
+	*__throwing = original.__throwing;
+	*__ranged = original.__ranged;
 	//   __ownedw
 	__ownedw.clear();
 	__ownedw.resize(original.__ownedw.size());
@@ -543,6 +542,20 @@ void Warrior::Swap_Var(const Warrior& original){
 	//   __equippeda
 	__equippeda.clear();
 	__equippeda.resize(original.__equippeda.size());
+	/**Armour_t is a placeholder**/
+	/*
+		Solution for deep-copying map pointers found here:
+			http://answers.yahoo.com/question/index?qid=20110131134402AAtTxgL
+			Answerer 2
+	*/
+	transform(
+		original.__equippeda.begin(), original.__equippeda.end(),
+		inserter(__equippeda, __equipped.begin())	//Returns an iterator
+			//lambda function that returns a pair<Armour_t,Armor*>
+		[](map<Armour_t,Armor*>::value_type pairtocopy){
+			return make_pair(pairtocopy.first, new Armor(*(pairtocopy.second)));
+		}
+	);
 	for(
 		auto iter_this = __equippeda.begin(), iter_o = original.__equippeda.begin();
 		iter_o != original.__equippeda.end();
