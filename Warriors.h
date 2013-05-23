@@ -1,6 +1,8 @@
 /** To-do
 	-party class
 	-Consider implementing consumable items in storage
+	-Consider breaking up list of attribute changes in switch-cases
+	--into various protected inline functions
 **/
 //There are placeholder names because they have not been defined
 //   in other classes/enums; these names will be marked
@@ -11,6 +13,7 @@
 #include <map>
 #include <string>
 #include <initializer_list>
+#include <unordered_map>
 
 #include "Weapons.h"
 #include "Armor.h"
@@ -19,6 +22,7 @@ using std::list;
 using std::map;
 using std::string;
 using std::initializer_list;
+using std::unordered_map;
 //Strongly typed because these should never 
 //   be compared with primitive types
 	//These are associated with a set of equipment
@@ -31,6 +35,7 @@ enum class W_Template{
 	Rogue,
 	Archer,
 	/*...*/
+	None
 };
 	//These are associated with certain,
 	//   set attribute values
@@ -38,23 +43,21 @@ enum class Attr_Template{
 	Strongman,
 	Sharpeye,
 	Obese,
-	Athlete
+	Athlete,
+	Brainiac,
+	Amateur,
+	Zen,
 	/*...*/
+	None
 };
 	//These are associated with certain attribute drops
 enum class Condition_t{
 	Cold,
 	Broken_Leg,
 	Burned,
-	Enraged
+	Enraged,
 	/*...*/
-};
-enum class Attack_t{
-	Punch,
-	Slice,
-	Tackle,
-	Shoot
-	/*...*/
+	Healthy
 };
 	//Prototype Warrior, so the associated non-member functions
 	//   can be shown before the class
@@ -82,10 +85,10 @@ class Warrior{
 		string Name()const;
 		Condition_t Status()const;
 			//Inventory functions
-			//   using "Weapon_t" and "Armor_T" as a 
+			/**Using "Weapon_t" and "Armor_T" as a 
 			//   placeholder for enums because I cannot
 			//   figure out how to implement choices without
-			//   one
+			//   one**/
 		void Equip(const Weapon* =nullptr, const Armor* =nullptr);
 		void Equip_from_Inventory(Weapon_t=NONE);
 		void Unequip();
@@ -149,10 +152,10 @@ class Warrior{
 			__stamina,
 				//Stamina used up per hour
 				//   measured in Joules/hour
-			__hunger,
+			__energy_consumption,
 				//Maximum amount of time warrior can stay 
 				//   awake before fainting
-				//   equivalent to __stamina/__hunger
+				//   equivalent to __stamina/__energy_consumption
 		//	__time_limit,
 				//Measured in kilometers/hour
 			__speed,
@@ -165,18 +168,28 @@ class Warrior{
 		;
 			//Only stores pointers to objects on the heap
 			//   alternative: cow_ptr<T>
-		list<Weapon*>
-			__eqipppedw,
-			__ownedw
+			//Equipped
+		Weapon*
+			__melee,
+			__throwing,
+			__ranged
 		;
-		list<Armour*>
-			__equippeda,
-			__owneda
+			/***Armour_t is a placeholder**/
+		unordered_map<Armour_t, Armor*> __equippeda
+			//Bitarrays to determine which slots are open
+		bool
+			available_w,   //lsb->msb: ranged, throwing, melee
+			available_a    //lsb->msb: legs, arms, chest, head
 		;
+			//Inventory
+		list<Weapon*> __ownedw;
+		list<Armour*> __owneda;
 			//inventory of ammunitions for each type
 			/**   "Ammunition_t" is a placeholder for an enum**/
 		map<Ammunition_t,unsigned> __available_amm;
 		Condition_t __condition;
+			//Hold a temporary image of past attribute values
+		list<double> attr_copy;
 			//Literal hit points; how many sharp blows a certain body part 
 			//   can sustain before becoming a hinderance; for
 			//   consistency, these will be measured in joules
