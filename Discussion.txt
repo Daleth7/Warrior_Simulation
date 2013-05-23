@@ -130,3 +130,15 @@ Here's an example of class hierarchy: let Shape be the base and Triangle be the 
 on what a Triangle is? Base classes are usually the more general version while derived classes are extensions to the 
 base class and/or are more specific.
 ~Daleth~
+
+Very good point. I was thinking of derived kind of like friends where they share all the same information.
+
+Do you think those are good variables that I used for the terrain or should I remove some of them? Also can you think
+of anymore I could add? I am currently setting up the default values for each terrain.
+
+Also one more question. Why is it you use enum class Something { stuff }; instead of just enum Something { stuff };? Is 
+it because you like the c++11 versions, so you can put same stuff names in different enums? I was reading up on enum 
+class and it said they are just managed enums where you can make it so they are chars instead of ints, or make them 
+longs, ect. I'm still faily new to the c++11 stuff should probably find a book on c++11 since most of their stuff is 
+easier to work with.
+-Giblit
