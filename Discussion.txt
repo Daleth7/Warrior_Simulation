@@ -142,3 +142,38 @@ class and it said they are just managed enums where you can make it so they are 
 longs, ect. I'm still faily new to the c++11 stuff should probably find a book on c++11 since most of their stuff is 
 easier to work with.
 -Giblit
+
+For friend classes just use the friend keyword, or for C++11, nest 'em. :3
+Verbatim from Warriors.h:
+//Strongly typed because these should never 
+//   be compared with primitive types
+
+With regular enums, you could do this:
+enum Fruit{
+    Apple,
+    Orange,
+    Final_Fruit_Key
+};
+//iterate through the enum list
+for(int i=0; i<Final_FruitKey; ++i){ //What does i < Final_Fruit_Key even mean logically?
+    if( i == Orange)  //What in the world is an association of Orange with the number 1? 
+                      //   How can an Orange be the number 1?
+}
+
+With strongly typed, or enum class, variables, this type of comparison is illegal. In addition, I am never iterating
+through my enums as I use switch statements.
+Another difference is the scoping with enum classes.
+enum class Fruit{
+    Apple,
+    Orange
+};
+Now just using Apple and Orange is no longer legal. These values exist as Fruit::Apple and Fruit::Orange(I know I'm 
+missing the scopes. I just fixed it). This prevents name clashes among different enums like:
+enum Fruit{
+    Apple,
+    Orange
+};
+enum Food{
+    Apple,  //Such a giant faux pas (oxymoron)
+    Orange
+};
