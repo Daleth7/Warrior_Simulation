@@ -1,6 +1,8 @@
 #include "Warriors.h"
 	//All number literals should be assumed to be a guess 
 	//   based on limited information
+	//   There are placeholder names because they have not been defined
+	//   in other classes/enums; these names will be marked
 #include <list>
 #include <cstdlib>
 #include <string>
@@ -64,8 +66,35 @@ bool operator==(const Warrior& lhs,const Warrior& rhs){
 Warrior* CraftWarrior(W_Template base, const string& input){
 	string newname = input;
 	if(newname.empty())	newname = setnames[ rand()%name_num ];
+		/**All of the Equip calls have placeholder names currently**/
+	Warrior* toreturn=nullptr;
 	switch(base){
-		
+		case W_Template::Knight:
+			toreturn = new Warrior(Attr_Template::Strongman, newname);
+			toreturn.Equip(Broadsword, Iron_Cuirass);
+			break;
+		case W_Template::Demolitionist:
+			toreturn = new Warrior(Attr_Template::Strongman, newname);
+			toreturn.Equip(C_4, Heavy_Vest);
+			break;
+		case W_Template::Medic:
+			toreturn = new Warrior(Attr_Template::Athlete, newname);
+			toreturn.Equip(First_Aid_Kit, Desert_Camoflague);
+			break;
+		case W_Template::Sniper:
+			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
+			toreturn.Equip(Sniper_Rifle, Forest_Camoflague);
+			toreturn.Store_Amm(Bullet,75);
+			break;
+		case W_Template::Rogue:
+			toreturn = new Warrior(Attr_Template::Athlete, newname);
+			toreturn.Equip(Knife, Loose_Cloth);
+			break;
+		case W_Template::Archer:
+			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
+			toreturn.Equip(Short_Bow, Vest);
+			toreturn.Store_Amm(Arrow, 25);
+			break;
 		default:	return new Warrior();
 	}
 }
@@ -236,7 +265,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	__right_foot(10000)
 {
 	switch(newattr){
-		case Strongman:
+		case Attr_Template::Strongman:
 			__accuracy         = max__accuracy*0.6;
 			__evasion_chance   = max__evasion_chance*0.4;
 			__intelligence     = max__intelligence/2;
@@ -250,7 +279,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 			__mental_fortitude = max__mental_fortitude*2/3;
 			__amicability      = max__amicability/3;
 			break;
-		case Sharpeye:
+		case Attr_Template::Sharpeye:
 			__accuracy         = max__accuracy*0.85;
 			__evasion_chance   = max__evasion_chance*0.645;
 			__intelligence     = max__intelligence*0.7;
@@ -264,7 +293,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 			__mental_fortitude = max__mental_fortitude/2;
 			__amicability      = max__amicability/3;
 			break;
-		case Obese:
+		case Attr_Template::Obese:
 			__accuracy         = max__accuracy*0.4;
 			__evasion_chance   = max__evasion_chance*0.15;
 			__intelligence     = max__intelligence*0.5;
@@ -278,7 +307,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 			__mental_fortitude = max__mental_fortitude/3;
 			__amicability      = max__amicability/5;
 			break;
-		case Athlete:
+		case Attr_Template::Athlete:
 			__accuracy         = max__accuracy*0.6;
 			__evasion_chance   = max__evasion_chance*0.64;
 			__intelligence     = max__intelligence*0.6;

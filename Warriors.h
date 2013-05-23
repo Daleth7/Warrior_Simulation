@@ -1,7 +1,9 @@
-/**
+/** To-do
 	-party class
-	-warrior factory method
+	-Consider implementing consumable items in storage
 **/
+//There are placeholder names because they have not been defined
+//   in other classes/enums; these names will be marked
 #ifndef WARRIORS_H
 #define WARRIORS_H
 	
@@ -92,6 +94,8 @@ class Warrior{
 		void Unequip();
 		void Unequip(Weapon_t=NONE, Armor_t=NONE)
 		void Store(const Weapon* =nullptr, const Armor* =nullptr);
+			/***Ammunition_t is a current placeholder***/
+		void Store_Amm(Ammunition_t,unsigned);
 			//In the event that the warrior's attributes are temporarily changed;
 			//Takes in a set of changes and adds those changes to the returned
 			//   Warrior object
@@ -168,7 +172,7 @@ class Warrior{
 			__owneda
 		;
 			//inventory of ammunitions for each type
-			//   "Ammunition_t" is a placeholder for an enum
+			/**   "Ammunition_t" is a placeholder for an enum**/
 		map<Ammunition_t,unsigned> __available_amm;
 		Condition_t __condition;
 			//Literal hit points; how many sharp blows a certain body part 
