@@ -177,3 +177,9 @@ enum Food{
     Apple,  //Such a giant faux pas (oxymoron)
     Orange
 };
+~Daleth~
+
+Oh I knew about the scoping did not know it was illegal to compare like that I suppose I'll use the class version then
+also because I am using a switch with them aswell I was under the impression all enums iterated the values thanks for
+the information.
+-Giblit
