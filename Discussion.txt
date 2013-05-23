@@ -194,3 +194,9 @@ in a tree's branches--brittleness--if a bullet can shatter a rock versus a bould
 -What are tree_info and rock_info supposed to inform us?
 -You could include the slickness of the ground, temperature, wind speed, cloudiness, sunniness, softness of the ground,
 humidity, et cetera, et cetera.
+
+Good points. They were set as public because I origonally had it so you were picking each thing but I actually was just
+working on that so now there are three ways to call the terrain: Terrain()/*default*/, Terrain( default_terain::NAME )
+/*Selected Default values*/, Terrain( trees , logs , boulders, rocks , vines ).
+Also those are very good idea's I have the height and width of the objects currently (that is what tree and rock _info are)
+I will see about adding those new features now.
