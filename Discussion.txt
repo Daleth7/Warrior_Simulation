@@ -125,3 +125,8 @@ class but the reverse is not true.
 Ah that makes more sense I was thinking that it went both ways just started using derived classes the other day.
 Lol at the solider type "obese"
 -Giblit
+
+Here's an example of class hierarchy: let Shape be the base and Triangle be the derived. How can Shape hold any information
+on what a Triangle is? Base classes are usually the more general version while derived classes are extensions to the 
+base class and/or are more specific.
+~Daleth~
