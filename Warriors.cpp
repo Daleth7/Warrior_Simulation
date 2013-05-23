@@ -9,19 +9,20 @@
 using std::list;
 using std::string;
 using std::initializer_list;
-	//Global constants for use in multiple functions/modules
+	//Global constants for use in multiple functions
 const double
 	__gravity(9.81),
 	__average_bfat_ratio(0.15),
 	__epsilon(1e-15)
 ;
-const unsigned name_num(18);
+const unsigned name_num(21);
 const string setnames[name_num] = {
 	"Bobby Jones", "Billy the Kid", "Occam",
 	"Yoda", "C#", "Parry Hotter", 
 	"Lola Gitner", "Tammy Roan", "Tommy Dirsk", 
 	"Michael Jackson", "Jack Finley", "Dudette",
-	"Jill Jack", "Ben Doe", "Gregory Ferdinand"
+	"Jill Jack", "Ben Doe", "Gregory Ferdinand",
+	"Figman Srued", "Bobby Fischer", "Peekat Chyu",
 //+1 internet cookie if you get the references below
 	"Red", "Green", "Blue"
 };
@@ -59,6 +60,14 @@ bool operator==(const Warrior& lhs,const Warrior& rhs){
 			return false;
 	}
 	return true;
+}
+Warrior* CraftWarrior(W_Template base, const string& input){
+	string newname = input;
+	if(newname.empty())	newname = setnames[ rand()%name_num ];
+	switch(base){
+		
+		default:	return new Warrior();
+	}
 }
 /*********************Member functions of the Warrior Class************/
 void Warrior::Attack(Warrior&, int=0);

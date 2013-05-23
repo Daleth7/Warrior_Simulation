@@ -59,6 +59,8 @@ enum class Attack_t{
 class Warrior;
 	//Test if two warriors have the same attributes and name
 bool operator==(const Warrior&,const Warrior&);
+	//Base warrior on a template and return a new object on the heap
+Warrior* CraftWarrior(W_Template, const string&="");
 
 class Warrior{
 	public:
@@ -85,11 +87,11 @@ class Warrior{
 			//   placeholder for enums because I cannot
 			//   figure out how to implement choices without
 			//   one
-		void Equip(const Weapon*=nullptr, const Armor*=nullptr);
+		void Equip(const Weapon* =nullptr, const Armor* =nullptr);
 		void Equip_from_Inventory(Weapon_t=NONE);
 		void Unequip();
 		void Unequip(Weapon_t=NONE, Armor_t=NONE)
-		void Store(const Weapon*=nullptr, const Armor*=nullptr);
+		void Store(const Weapon* =nullptr, const Armor* =nullptr);
 			//In the event that the warrior's attributes are temporarily changed;
 			//Takes in a set of changes and adds those changes to the returned
 			//   Warrior object
