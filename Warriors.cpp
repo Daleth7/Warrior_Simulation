@@ -95,8 +95,9 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 			toreturn.Equip(Short_Bow, Vest);
 			toreturn.Store_Amm(Arrow, 25);
 			break;
-		default:	return new Warrior();
+		default:	return new Warrior(newname);
 	}
+	return toreturn;
 }
 /*********************Member functions of the Warrior Class************/
 void Warrior::Attack(Warrior&, int=0);
@@ -211,7 +212,7 @@ Warrior Warrior::Temporary(const list<double>& changes){
 }
 void Warrior::SetCondition(Condition_t newcondition){__condition = newcondition;}
 
-Warrior::Warrior():
+Warrior::Warrior(const string& newname):
 	alive(true),
 	__head(15000),
 	__neck(9000),
@@ -230,7 +231,8 @@ Warrior::Warrior():
 	__right_foot(10000)
 {
 		//Set name
-	__name = setnames[ rand()%15 ];
+	if(newname.empty())	__name = setnames[ rand()%15 ];
+	else __name = newname;
 	
 		//Set attribute values
 	__accuracy         = Generate_Rand_Val(max__accuracy);

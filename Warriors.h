@@ -67,7 +67,8 @@ Warrior* CraftWarrior(W_Template, const string&="");
 class Warrior{
 	public:
 			//Action functions
-			//int is for defend(1), counterattack(2), run(3),
+			//int is for the target's reaction:
+			//   defend(1), counterattack(2), run(3),
 			//   or nothing(0)
 			//   -call respective defend/counterattack
 			//   -swap change in stamina or alive variables
@@ -75,10 +76,6 @@ class Warrior{
 			//   -Check hit points of both warriors and determine
 			//   if the warrior is dead or not
 		void Attack(Warrior&, int=0);
-			//Return a copy with modified attribute values
-		Warrior Defend();
-		Warrior Counterattack();
-		Warrior Run();
 			//Read-only functions
 		bool Alive()const;
 		list<double> Attributes()const;
@@ -104,7 +101,7 @@ class Warrior{
 			//Initializes attribute variables with
 			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
-		explicit Warrior();
+		explicit Warrior(const string&="");
 		Warrior(Attr_Template,const string&);
 			//Set attributes manually;
 			//   order follows member double variables;
@@ -117,6 +114,11 @@ class Warrior{
 			//Deallocate memory from list objects
 		~Warrior();
 	protected:
+			//Return a copy with modified attribute values
+		Warrior Defend();
+		Warrior Counterattack();
+		Warrior Run();
+			//Functions for managing the object
 		double Generate_Rand_Val(const int&);
 		void Swap_Var(const Warrior&);
 			//Make sure the attributes are within the correct range
