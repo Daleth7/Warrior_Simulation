@@ -7,17 +7,18 @@ To-Do List:
 
 -Filiprei:
 --Armour class
---Interface(?)
 
 -FredBill:
 --Weapon class
 
 -Daleth:
---Warrior(?)
+--Warrior
 
 -Gilbit:
 --Environment class
 
 -(?)
---Environment class
 --Event/Interaction Manager
+--Interface
+
+We might want to set some reachable, reasonable goals so our codes don't shoot for the moon and never come back.
