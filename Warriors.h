@@ -1,8 +1,6 @@
 /** To-do
 	-party class
 	-Consider implementing consumable items in storage
-	-Consider breaking up list of attribute changes in switch-cases
-	--into various protected inline functions
 **/
 //There are placeholder names because they have not been defined
 //   in other classes/enums; these names will be marked
@@ -82,6 +80,7 @@ class Warrior{
 			//Read-only functions
 		bool Alive()const;
 		list<double> Attributes()const;
+		list<double> HealthStatus()const;
 		string Name()const;
 		Condition_t Status()const;
 			//Inventory functions
@@ -99,7 +98,7 @@ class Warrior{
 			//In the event that the warrior's attributes are temporarily changed;
 			//Takes in a set of changes and adds those changes to the returned
 			//   Warrior object
-		Warrior Temporary(const list<double>&);
+		Warrior Temporary(list<double>&);
 		void SetCondition(Condition_t);
 			//Initializes attribute variables with
 			//   random values and no equipment;
@@ -110,22 +109,29 @@ class Warrior{
 			//   order follows member double variables;
 			//   0 will indicate attribute value to be 
 			//   randomized
-		Warrior(const initializer_list<double>&,const string&);
+		Warrior(initializer_list<double>&,const string&);
 			//Deal with pointers
 		Warrior(const Warrior&);
 		Warrior& operator=(const Warrior&);
 			//Deallocate memory from list objects
 		~Warrior();
 	protected:
+		//Action functions called by Attack()
 			//Return a copy with modified attribute values
 		Warrior Defend();
 		Warrior Counterattack();
 		Warrior Run();
-			//Functions for managing the object
+		//Functions for managing the class
 		double Generate_Rand_Val(const int&);
 		void Swap_Var(const Warrior&);
 			//Make sure the attributes are within the correct range
 		void Check();
+		//Inline auxillary functions
+		void Nonconstant_Transform(
+			list<double*>&,              //List of variables to change
+			const list<double>&,         //Values used in change
+			void (*fptr)(list<double*>::iterator,double) //Function that makes changes
+		);
 	private:
 		string __name;
 		bool __alive;
@@ -166,24 +172,30 @@ class Warrior{
 				//   measured as a ratio of persons per group of persons
 			__amicability
 		;
-			//Only stores pointers to objects on the heap
-			//   alternative: cow_ptr<T>
+		const list<double*> __Attr_list__;
 			//Equipped
-		Weapon*
+		Weapon
 			__melee,
 			__throwing,
 			__ranged
 		;
 			/***Armour_t is a placeholder**/
-		unordered_map<Armour_t, Armor*> __equippeda
+		unordered_map<Armour_t, Armor> __equippeda
 			//Bitarrays to determine which slots are open
-		bool
-			available_w,   //lsb->msb: ranged, throwing, melee
-			available_a    //lsb->msb: legs, arms, chest, head
-		;
+		short available;
+		enum available_bit_flags{
+			ranged_equipped = 0x1,
+			throwing_equipped = 0x2,
+			melee_equipped = 0x4,
+			
+			legs_equipped = 0x256,
+			arms_equipped = 0x512,
+			chest_equipped = 0x1024,
+			head_equipped = 0x2048
+		};
 			//Inventory
-		list<Weapon*> __ownedw;
-		list<Armour*> __owneda;
+		list<Weapon> __ownedw;
+		list<Armour> __owneda;
 			//inventory of ammunitions for each type
 			/**   "Ammunition_t" is a placeholder for an enum**/
 		map<Ammunition_t,unsigned> __available_amm;

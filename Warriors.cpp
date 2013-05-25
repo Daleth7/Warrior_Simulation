@@ -7,33 +7,80 @@
 #include <cstdlib>
 #include <string>
 #include <initializer_list>
-#include <algorithm>
-#include <utility>
-#include <iterator>
+#include <vector>
+#include <cstddef>
 
 using std::list;
 using std::string;
 using std::initializer_list;
-using std::transform;
-using std::make_pair;
-using std::inserter;
 	//Global constants for use in multiple functions
 const double
 	__gravity(9.81),
 	__average_bfat_ratio(0.15),
 	__epsilon(1e-15)
 ;
-const unsigned name_num(21);
-const string setnames[name_num] = {
+const std::vector<string> setnames = {
 	"Bobby Jones", "Billy the Kid", "Occam",
 	"Yoda", "C#", "Parry Hotter", 
 	"Lola Gitner", "Tammy Roan", "Tommy Dirsk", 
 	"Michael Jackson", "Jack Finley", "Dudette",
 	"Jill Jack", "Ben Doe", "Gregory Ferdinand",
 	"Figman Srued", "Bobby Fischer", "Peekat Chyu",
+	"@", "Red Rogue", "Googal Plex",
+	"Hank J. Wimbleton", "Jebus H. Christ", "Tricky the Clown",
+	"Sanford", "Deimos", "The Auditor",
+	"Giblit", "Filiprei", "Daleth",
+//Real names of former commanders around the WWII period because why the hell not
+//  Country order is alphabetical to avoid bias
+	//Order: Army / Air Force / Navy
+	//United Kingdom
+	"Field Marshal Archibald Wavell", "Chief Marshal Arthur Harris", "Admiral Sir Alfred Pound",
+	//France - Two Army, no air force commander's name available
+	"Brigadier General Charles de Gaulle", "Marshal Jean de Lattre de Tassigny", "Admiral Francois Darlan",
+	//United States
+	"General George Smith Patton Jr.", "General Carl Spaatz", "Admiral Chester William Nimitz", 
+	//Soviet Union
+	"General Nikolai Vatutin", "Chief Marshal Alexander Novikov", "Admiral Ivan Isakov",
+	//Republic of China - All army, no air force or naval commander's name available
+	"General Yan Xishan", "General Chen Cheng", "General Xue Yue",
+	//Australia
+	"General Thomas Blamey", "Marshal Peter Roy Maxwell Drummond", "Vice Admiral John Gregory Crace",
+	//New Zealand - two air force, no naval commander's name available
+	"Lieutenant General 1st Baron Bernard Freyberg", "Marshal Arthur Coningham", "Chief Marshal Keith Park",
+	//Poland - All army, no air force or naval commander's name available
+	"General Wlayslaw Sikorski", "Lieutenant General Tadeusz Bor-Komorowski", "Commander-in-Chief Edward Rydz-Smigly",
+	//Czechoslovakia - All army, no air force or naval commander's name available
+	"General Ludvik Svoboda", "Brigadier General Jan Golian", "Brigadier General Rudolf Pilfousek",
+	//Greece - Two army, no air force commander's name available
+	"General Napoleon Zervas", "Colonel Stefanos Sarafis", "Vice Admiral Alexandros Sakellariou",
+	//Netherlands - Two navy, no air force commander's name available
+	"Lieutenant General Hein ter Poorten", "Rear Admiral Karel Doorman", "Vice Admiral Conrad Helfrich",
+	//Yugoslavia - All army, no air force or naval commander's name available
+	"General Draza Mihajlovic", "Marshal Josip Broz Tito", "Commander Droboslav Jevdevic",
+	//Canada - All army, no air force or naval commander's name available
+	"General Harry Crerar", "Lieutenant General Guy Simmonds", "Lieutenant General Andrew McNaughton",
+	//Germany
+	"Field Marshal Erwin Rommel", "Field Marshal Wolfram Freiherr von Richthofen", "Grand Admiral Karl Donitz",
+	//Italy - Two army, no air force commander's name available
+	"Marshal Pietro Badoglio", "Marshal Giovanni Messe", "Admiral Arturo Riccardi",
+	//Japan - Two navy, no air force commander's name available
+	"General Tomoyuki Yamashita", "Admiral Osami Nagano", "Admiral Chuichi Nagumo",
+	//Thailand - All army, no air force or naval commander's name available
+	"Lieutenant General Prince Arthit Trip-apha", "General Luang Haansongkhram", "Major KhunNimmarnkolayut",
+	//Finland - All army, no air force or naval commander's name available
+	"Colonel Hjalmar Siilasvuo", "Lieutenant General Karl Lennart Oesch", "Marshal Carl Gustaf Emil Mannerheim",
+	//Romania - All army, no air force or naval commander's name available
+	"Marshal Ion Antonescu", "General Petre Dumitrescu", "Division General Platon Chirnoaga",
+	//Slovakia - All army, no air force or naval commander's name available
+	"Major General Ferdinand Catlos", "General Rudolf Viest", "Brigadier General Jan Golian",
+	//India - All army, no air force or naval commander's name available
+	"Supreme Commander Subhas Chandra Bose", "Captain Lakshmi Sahgal", "Major Mohan Singh Deb",
+	//Burma, Switzerland, Ukraine - All army, no air force or naval commander's name available
+	"Major General Aung San", "General Henri Guisan", "General Roman Shukhevych",
 //+1 internet cookie if you get the references below
 	"Red", "Green", "Blue"
 };
+const size_t name_num(setnames.size());
 const int	//Maximum values
 	max__accuracy(1),
 	max__evasion_chance(1),
@@ -84,7 +131,7 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 			toreturn.Equip(C_4, Heavy_Vest);
 			break;
 		case W_Template::Medic:
-			toreturn = new Warrior(Attr_Template::Athlete, newname);
+			toreturn = new Warrior(Attr_Template::Brainiac, newname);
 			toreturn.Equip(First_Aid_Kit, Desert_Camoflague);
 			break;
 		case W_Template::Sniper:
@@ -106,7 +153,28 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 	return toreturn;
 }
 /*********************Member functions of the Warrior Class************/
-void Warrior::Attack(Warrior&, int=0);
+void Warrior::Attack(Warrior& Target, int reaction){
+	Warrior Tcopy;
+	switch(reaction){
+		case 1:	Tcopy = Target.Defend();        break;
+		case 2:	Tcopy = Target.Counterattack(); break;
+		case 3:	Tcopy = Target.Run();           break;
+		default:	break;
+	}
+		//Calculate loss in attribute values
+/*****************************************************************************************/
+		//Check if the warrior is dead
+	list<double> _Health_ = this->HealthStatus();
+	for(auto iter = _Health_.begin(); iter != _Health_.end(); ++iter){
+		if(*iter == 0)	__alive = false;
+	}
+	_Health_ = Tcopy.HealthStatus();
+	for(auto iter = _Health_.begin(); iter != _Health_.end(); ++iter){
+		if(*iter == 0)	Tcopy.__alive = false;
+	}
+		//Copy back changes
+	Target = Tcopy;
+}
 Warrior Warrior::Defend();
 Warrior Warrior::Counterattack();
 Warrior Warrior::Run();
@@ -120,6 +188,15 @@ list<double> Warrior::Attributes()const{
 		__speed, __mental_fortitude, __amicability
 	};
 }
+list<double> HealthStatus()const{
+	return {
+		__head, __neck, __chest,
+		__stomach, __groin, __left_shoulder,
+		__right_shoulder, __left_arm, __right_arm,
+		__left_hand, __right_hand, __left_leg,
+		__right_leg, __left_foot, __right_foot
+	};
+};
 string Warrior::Name()const{return __name;}
 Condition_t Warrior::Status()const{return __condition;}
 
@@ -129,90 +206,64 @@ void Warrior::Unequip();
 void Warrior::Unequip(Weapon_t choice, Armor_t choice)
 void Warrior::Store(const Weapon* newwep, const Armor* newarm);
 
-Warrior Warrior::Temporary(const list<double>& changes){
+Warrior Warrior::Temporary(list<double>& changes){
 	Warrior catalyst = *this;
+	changes.resize(catalyst.Attributes.size() + catalyst.HealthStatus().size());
 	auto iter = changes.begin();
-	if(iter == changes.end())	return;
-	__accuracy         += *iter;
+	__accuracy           += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__evasion_chance   += *iter;
+	__evasion_chance     += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__intelligence     += *iter;
+	__intelligence       += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__mass             += *iter;
+	__mass               += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__height           += *iter;
+	__height             += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__strength         += *iter;
+	__strength           += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__swiftness        += *iter;
+	__swiftness          += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__stamina          += *iter;
+	__stamina            += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__energy_consumption           += *iter;
+	__energy_consumption += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__speed            += *iter;
+	__speed              += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__mental_fortitude += *iter;
+	__mental_fortitude   += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__amicability      += *iter;
+	__amicability        += *iter;
 		++iter;
 	
-	if(iter == changes.end()){	Check();	return;}
-	__head           += *iter;
+	__head               += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__neck           += *iter;
+	__neck               += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__chest          += *iter;
+	__chest              += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__stomach        += *iter;
+	__stomach            += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__groin          += *iter;
+	__groin              += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__left_shoulder  += *iter;
+	__left_shoulder      += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__right_shoulder += *iter;
+	__right_shoulder     += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__left_arm       += *iter;
+	__left_arm           += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__right_arm      += *iter;
+	__right_arm          += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__left_hand      += *iter;
+	__left_hand          += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__right_hand     += *iter;
+	__right_hand         += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__left_leg       += *iter;
+	__left_leg           += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__right_leg      += *iter;
+	__right_leg          += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__left_foot      += *iter;
+	__left_foot          += *iter;
 		++iter;
-	if(iter == changes.end()){	Check();	return;}
-	__right_foot     += *iter;
+	__right_foot         += *iter;
 		
 	Check();
 }
@@ -221,22 +272,30 @@ void Warrior::SetCondition(Condition_t newcondition){
 	__condition = newcondition;
 		//Stage one: determine whether or not to make image
 	switch(newcondition){
-		case Condition_t::Cold:
-		case Condition_t::Broken_Leg:
-		case Condition_t::Burned:
-		case Condition_t::Enraged:
+		case Condition_t::Healthy:	break;
+		default:
 			attr_copy = {
 				__accuracy, __evasion_chance, __intelligence,
-				__strength,
-				__swiftness, __energy_consumption,
+				__strength, __swiftness, __energy_consumption,
 				__speed, __mental_fortitude, __amicability
 			};
-		default:	break;
+			break;
 	}
 		//Stage two: determine what values to change
+	auto Multiply_Assign = 
+		[](list<double*>::iterator var, double product){**var *= product;};
 	switch(newcondition){
 		case Condition_t::Cold:
-			__accuracy         *= 0.5;
+			NonConstant_Transform(
+				{&__accuracy, &__evasion_chance, &__intelligence,
+				&__strength, &__swiftness, &__energy_consumption,
+				&__speed, &__mental_fortitude, &__amicability},
+				{0.5, 0.85, 0.95,
+				0.75, 0.5, 1.2,
+				0.75, 0.95, 0.5},
+				Multiply_Assign
+			);
+/*			__accuracy         *= 0.5;
 			__evasion_chance   *= 0.85;
 			__intelligence     *= 0.95;
 			__strength         *= 0.75;
@@ -245,7 +304,7 @@ void Warrior::SetCondition(Condition_t newcondition){
 			__speed            *= 0.75;
 			__mental_fortitude *= 0.95;
 			__amicability      *= 0.5;
-			break;
+*/			break;
 		case Condition_t::Broken_Leg:
 			__accuracy         *= 0.75;
 			__evasion_chance   *= 0.2;
@@ -298,7 +357,13 @@ void Warrior::SetCondition(Condition_t newcondition){
 }
 
 Warrior::Warrior(const string& newname):
-	alive(true), available_w(false), available_a(false),
+	alive(true), available(false),
+	__Attr_list__({
+		&__accuracy,  &__evasion_chance,   &__intelligence,
+		&__mass,      &__height,           &__strength, 
+		&__swiftness, &__stamina,          &__energy_consumption,
+		&__speed,     &__mental_fortitude, &__amicability
+	}),
 	__head(15000),
 	__neck(9000),
 	__chest(30000),
@@ -318,7 +383,6 @@ Warrior::Warrior(const string& newname):
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%15 ];
 	else __name = newname;
-	
 		//Set attribute values
 	__accuracy           = Generate_Rand_Val(max__accuracy);
 	__evasion_chance     = Generate_Rand_Val(max__evasion_chance);
@@ -334,7 +398,13 @@ Warrior::Warrior(const string& newname):
 	__amicability        = Generate_Rand_Val(max__amicability);
 }
 Warrior::Warrior(Attr_Template newattr, const string& newname):
-	__name(newname), __alive(true), available_w(false), available_a(false),
+	__alive(true), available(false),
+	__Attr_list__({
+		&__accuracy,  &__evasion_chance,   &__intelligence,
+		&__mass,      &__height,           &__strength, 
+		&__swiftness, &__stamina,          &__energy_consumption,
+		&__speed,     &__mental_fortitude, &__amicability
+	}),
 	__head(15000),
 	__neck(9000),
 	__chest(30000),
@@ -351,9 +421,22 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	__left_foot(10000),
 	__right_foot(10000)
 {
+		//Set name
+	if(newname.empty())	__name = setnames[ rand()%15 ];
+	else __name = newname;
+	auto Assign = 
+		[](list<double*>::iterator var,double newval){**var = newval;};
 	switch(newattr){
 		case Attr_Template::Strongman:
-			__accuracy         = max__accuracy*0.6;
+			Nonconstant_Transform(
+				__Attr_list__,
+				{max__accuracy*0.6, max__evasion_chance*0.4, max__intelligence/2,
+				max__mass*8/15, max__height*0.6, max__strength*10/11,
+				max__swiftness/4, max__stamina*2/3, max__energy_consumption*3/4,
+				max__speed/5, max__mental_fortitude*2/3, max__amicability/3},
+				Assign
+			);
+/*			__accuracy         = max__accuracy*0.6;
 			__evasion_chance   = max__evasion_chance*0.4;
 			__intelligence     = max__intelligence/2;
 			__mass             = max__mass*8/15;
@@ -365,7 +448,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 			__speed            = max__speed/5;
 			__mental_fortitude = max__mental_fortitude*2/3;
 			__amicability      = max__amicability/3;
-			break;
+*/			break;
 		case Attr_Template::Sharpeye:
 			__accuracy         = max__accuracy*0.85;
 			__evasion_chance   = max__evasion_chance*0.645;
@@ -454,8 +537,14 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 		default:	Warrior();	break;
 	}
 }
-Warrior::Warrior(const initializer_list<double>& newattr, const string& newname):
-	__name(newname), __alive(true), available_w(false), available_a(false),
+Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
+	__alive(true), available(false),
+	__Attr_list__({
+		&__accuracy,  &__evasion_chance,   &__intelligence,
+		&__mass,      &__height,           &__strength, 
+		&__swiftness, &__stamina,          &__energy_consumption,
+		&__speed,     &__mental_fortitude, &__amicability
+	}),
 	__head(15000),
 	__neck(9000),
 	__chest(30000),
@@ -472,7 +561,17 @@ Warrior::Warrior(const initializer_list<double>& newattr, const string& newname)
 	__left_foot(10000),
 	__right_foot(10000)
 {
-	auto iter = newattr.begin();
+		//Set name
+	if(newname.empty())	__name = setnames[ rand()%15 ];
+	else __name = newname;
+		//Copy attributes
+	newattr.resize(this->Attributes().size());
+	Nonconstant_Transform(
+		__Attr_list__,
+		newattr,
+		Boundary_Checker
+	);
+/*	auto iter = newattr.begin();
 	__accuracy           = *iter;
 	__evasion_chance     = *(++iter);
 	__intelligence       = *(++iter);
@@ -485,26 +584,23 @@ Warrior::Warrior(const initializer_list<double>& newattr, const string& newname)
 	__speed              = *(++iter);
 	__mental_fortitude   = *(++iter);
 	__amicability        = *(++iter);
-	
+*/
 	Check();
 }
-Warrior::Warrior(const Warrior& original){Swap_Var(original);}
+Warrior::Warrior(const Warrior& original):
+	__Attr_list__({
+		&__accuracy,  &__evasion_chance,   &__intelligence,
+		&__mass,      &__height,           &__strength, 
+		&__swiftness, &__stamina,          &__energy_consumption,
+		&__speed,     &__mental_fortitude, &__amicability
+	}),
+{Swap_Var(original);}
 Warrior& Warrior::operator=(const Warrior& original){
-	if(this != &original)
-		Swap_Var(original);
+	if(this != &original)	Swap_Var(original);
 	return *this;
 }
 
-Warrior::~Warrior(){
-		//These should be removed iff we use smart pointers
-	delete __melee, delete __throwing, delete __ranged;
-	for(auto iter = __ownedw.begin(); iter != __ownedw.end(); iter++)
-		delete iter;
-	for(auto iter = __equippeda.begin(); iter != __equippeda.end(); iter++)
-		delete iter;
-	for(auto iter = __owneda.begin(); iter != __owneda.end(); iter++)
-		delete iter;
-}
+Warrior::~Warrior(){}
 
 double Warrior::Generate_Rand_Val(const int& max_value){
 	return max_value - rand()%max_value - double(rand()%RAND_MAX)/RAND_MAX;
@@ -524,79 +620,53 @@ void Warrior::Swap_Var(const Warrior& original){
 	__speed              = original.__speed;
 	__mental_fortitude   = original.__mental_fortitude;
 	__amicability        = original.__amicability;
-	//   __melee, __throwing, __ranged
-	*__melee = original.__melee;
-	*__throwing = original.__throwing;
-	*__ranged = original.__ranged;
-	//   __ownedw
-	__ownedw.clear();
-	__ownedw.resize(original.__ownedw.size());
-	for(
-		auto iter_this = __ownedw.begin(), iter_o = original.__ownedw.begin();
-		iter_o != original.__ownedw.end();
-		++iter_this, ++iter_o
-	){
-		iter_this = new Weapon;
-		(*iter_this) = (*iter_o);
-	}
-	//   __equippeda
-	__equippeda.clear();
-	__equippeda.resize(original.__equippeda.size());
-	/**Armour_t is a placeholder**/
-	/*
-		Solution for deep-copying map pointers found here:
-			http://answers.yahoo.com/question/index?qid=20110131134402AAtTxgL
-			Answerer 2
-	*/
-	transform(
-		original.__equippeda.begin(), original.__equippeda.end(),
-		inserter(__equippeda, __equipped.begin())	//Returns an iterator
-			//lambda function that returns a pair<Armour_t,Armor*>
-		[](map<Armour_t,Armor*>::value_type pairtocopy){
-			return make_pair(pairtocopy.first, new Armor(*(pairtocopy.second)));
-		}
-	);
-	for(
-		auto iter_this = __equippeda.begin(), iter_o = original.__equippeda.begin();
-		iter_o != original.__equippeda.end();
-		++iter_this, ++iter_o
-	){
-		iter_this = new Armor;
-		(*iter_this) = (*iter_o);
-	}
-	//   __owneda
-	__owneda.clear();
-	__owneda.resize(original.__owneda.size());
-	for(
-		auto iter_this = __owneda.begin(), iter_o = original.__owneda.begin();
-		iter_o != original.__owneda.end();
-		++iter_this, ++iter_o
-	){
-		iter_this = new Armor;
-		(*iter_this) = (*iter_o);
-	}
-	
-	__available_amm = original.__available_amm;
-	__condition = orignal.__condition;
-	
-	__head           = original.__head;
-	__neck           = original.__neck;
-	__chest          = original.__chest;
-	__stomach        = original.__stomach;
-	__groin          = original.__groin;
-	__left_shoulder  = original.__left_shoulder;
-	__right_shoulder = original.__right_shoulder;
-	__left_arm       = original.__left_arm;
-	__right_arm      = original.__right_arm;
-	__left_hand      = original.__left_hand;
-	__right_hand     = original.__right_hand;
-	__left_leg       = original.__left_leg;
-	__right_leg      = original.__right_leg;
-	__left_foot      = original.__left_foot;
-	__right_foot     = original.__right_foot;
+	__melee              = original.__melee;
+	__throwing           = original.__throwing;
+	__ranged             = original.__ranged;
+	available            = original.available;
+	__ownedw             = original.__ownedw;
+	__equippeda          = original.__equippeda;
+	__owneda             = original.__owneda;
+	__available_amm      = original.__available_amm;
+	__condition          = orignal.__condition;
+	attr_copy            = original.attr_copy;
+	__head               = original.__head;
+	__neck               = original.__neck;
+	__chest              = original.__chest;
+	__stomach            = original.__stomach;
+	__groin              = original.__groin;
+	__left_shoulder      = original.__left_shoulder;
+	__right_shoulder     = original.__right_shoulder;
+	__left_arm           = original.__left_arm;
+	__right_arm          = original.__right_arm;
+	__left_hand          = original.__left_hand;
+	__right_hand         = original.__right_hand;
+	__left_leg           = original.__left_leg;
+	__right_leg          = original.__right_leg;
+	__left_foot          = original.__left_foot;
+	__right_foot         = original.__right_foot;
 }
 void Warrior::Check(){
-	if(__accuracy         > max__accuracy-__epsilon)
+		//Check if the attribute values are in the correct range
+	auto Boundary_Checker = 
+		[](list<double*>::iterator var, double maximum){
+			if(**var > maximum - __epsilon)
+				**var = maximum - 2*__epsilon;
+			else if(**var < __epsilon)
+				**var = 2*__epsilon;
+		};
+	Nonconstant_Transform(
+		{&__accuracy, &__evasion_chance, &__intelligence,
+		&__mass, &__height, &__strength, 
+		&__swiftness, &__stamina, &__energy_consumption,
+		&__speed, &__mental_fortitude, &__amicability},
+		{max__accuracy, max__evasion_chance, max__intelligence,
+		max__mass, max__height, max__strength,
+		max__swiftness, max__stamina, max__energy_consumption,
+		max__speed, max__mental_fortitude, max__amicability},
+		Boundary_Checker
+	);
+/*	if(__accuracy         > max__accuracy-__epsilon)
 		__accuracy = max__accuracy-2*__epsilon;
 	else if(__accuracy < __epsilon)
 		__accuracy = 2*__epsilon;
@@ -644,6 +714,48 @@ void Warrior::Check(){
 		__amicability = max__amicability-2*__epsilon;
 	else if(__amicability < __epsilon)
 		__amicability = 2*__epsilon;
-	//Check if body part is dead********************************************
+*/		//Check for equipment
+		//Fully capitalized words are placeholders
+	if(
+		(__ranged.TYPE == NONE && available^ranged_equipped) ||
+		(__ranged.TYPE != NONE && available^ranged_equipped == 0)
+	)	available ^= ranged_equipped;
+	if(
+		(__throwing.TYPE == NONE && available^throwing_equipped) ||
+		(__throwing.TYPE != NONE && available^throwing_equipped == 0)
+	)	available ^= throwing_equipped;
+	if(
+		(__melee.TYPE == NONE && available^melee_equipped) ||
+		(__melee.TYPE != NONE && available^melee_equipped == 0)
+	)	available ^= melee_equipped;
+	if(
+		(__equippeda[LEGS].TYPE == NONE && available^legs_equipped) ||
+		(__equippeda[LEGS].TYPE != NONE && available^legs_equipped == 0)
+	)	available ^= legs_equipped;
+	if(
+		(__equippeda[ARMS].TYPE == NONE && available^arms_equipped) ||
+		(__equippeda[ARMS].TYPE != NONE && available^arms_equipped == 0)
+	)	available ^= arms_equipped;
+	if(
+		(__equippeda[CHEST].TYPE == NONE && available^chest_equipped) ||
+		(__equippeda[CHEST].TYPE != NONE && available^chest_equipped == 0)
+	)	available ^= chest_equipped;
+	if(
+		(__equippeda[HEAD].TYPE == NONE && available^head_equipped) ||
+		(__equippeda[HEAD].TYPE != NONE && available^head_equipped == 0)
+	)	available ^= head_equipped;
+}
+inline void Nonconstant_Transform(
+	list<double*>& variables,
+	const list<double>& newvalues,
+	void (*fptr)(list<double*>::iterator,double) 
+){
+	newvalues.resize(variables.size());
+	auto iter = variables.begin();
+	auto iter2 = newvalues.begin();
+	//In case the issue arises:
+	//   http://www.dreamincode.net/forums/topic/196133-inline-function-pointers/
+	for(; iter != variables.end(); ++iter, ++iter2)
+		(*fptr)(iter,*iter2);
 }
 /*****************End Member functions of the Warrior Class************/
