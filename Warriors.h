@@ -184,14 +184,14 @@ class Warrior{
 			//Bitarrays to determine which slots are open
 		short available;
 		enum available_bit_flags{
-			ranged_equipped = 0x1,
-			throwing_equipped = 0x2,
-			melee_equipped = 0x4,
+			ranged_equipped = 1,
+			throwing_equipped = 2,
+			melee_equipped = 4,
 			
-			legs_equipped = 0x256,
-			arms_equipped = 0x512,
-			chest_equipped = 0x1024,
-			head_equipped = 0x2048
+			legs_equipped = 256,
+			arms_equipped = 512,
+			chest_equipped = 1024,
+			head_equipped = 2048
 		};
 			//Inventory
 		list<Weapon> __ownedw;
