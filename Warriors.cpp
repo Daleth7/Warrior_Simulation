@@ -566,11 +566,8 @@ Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
 	else __name = newname;
 		//Copy attributes
 	newattr.resize(this->Attributes().size());
-	Nonconstant_Transform(
-		__Attr_list__,
-		newattr,
-		Boundary_Checker
-	);
+	auto Assign = [](list<double*>::iterator var,double newval){**var = newval;};
+	Nonconstant_Transform(__Attr_list__, newattr, Assign);
 /*	auto iter = newattr.begin();
 	__accuracy           = *iter;
 	__evasion_chance     = *(++iter);
@@ -656,10 +653,7 @@ void Warrior::Check(){
 				**var = 2*__epsilon;
 		};
 	Nonconstant_Transform(
-		{&__accuracy, &__evasion_chance, &__intelligence,
-		&__mass, &__height, &__strength, 
-		&__swiftness, &__stamina, &__energy_consumption,
-		&__speed, &__mental_fortitude, &__amicability},
+		__Attr_list__,
 		{max__accuracy, max__evasion_chance, max__intelligence,
 		max__mass, max__height, max__strength,
 		max__swiftness, max__stamina, max__energy_consumption,
