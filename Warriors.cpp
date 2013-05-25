@@ -33,50 +33,50 @@ const std::vector<string> setnames = {
 //Real names of former commanders around the WWII period because why the hell not
 //  Country order is alphabetical to avoid bias
 	//Order: Army / Air Force / Navy
-	//United Kingdom
-	"Field Marshal Archibald Wavell", "Chief Marshal Arthur Harris", "Admiral Sir Alfred Pound",
-	//France - Two Army, no air force commander's name available
-	"Brigadier General Charles de Gaulle", "Marshal Jean de Lattre de Tassigny", "Admiral Francois Darlan",
-	//United States
-	"General George Smith Patton Jr.", "General Carl Spaatz", "Admiral Chester William Nimitz", 
-	//Soviet Union
-	"General Nikolai Vatutin", "Chief Marshal Alexander Novikov", "Admiral Ivan Isakov",
-	//Republic of China - All army, no air force or naval commander's name available
-	"General Yan Xishan", "General Chen Cheng", "General Xue Yue",
 	//Australia
 	"General Thomas Blamey", "Marshal Peter Roy Maxwell Drummond", "Vice Admiral John Gregory Crace",
-	//New Zealand - two air force, no naval commander's name available
-	"Lieutenant General 1st Baron Bernard Freyberg", "Marshal Arthur Coningham", "Chief Marshal Keith Park",
-	//Poland - All army, no air force or naval commander's name available
-	"General Wlayslaw Sikorski", "Lieutenant General Tadeusz Bor-Komorowski", "Commander-in-Chief Edward Rydz-Smigly",
-	//Czechoslovakia - All army, no air force or naval commander's name available
-	"General Ludvik Svoboda", "Brigadier General Jan Golian", "Brigadier General Rudolf Pilfousek",
-	//Greece - Two army, no air force commander's name available
-	"General Napoleon Zervas", "Colonel Stefanos Sarafis", "Vice Admiral Alexandros Sakellariou",
-	//Netherlands - Two navy, no air force commander's name available
-	"Lieutenant General Hein ter Poorten", "Rear Admiral Karel Doorman", "Vice Admiral Conrad Helfrich",
-	//Yugoslavia - All army, no air force or naval commander's name available
-	"General Draza Mihajlovic", "Marshal Josip Broz Tito", "Commander Droboslav Jevdevic",
+	//Burma, Switzerland, Ukraine - All army, no air force or naval commander's name available
+	"Major General Aung San", "General Henri Guisan", "General Roman Shukhevych",
 	//Canada - All army, no air force or naval commander's name available
 	"General Harry Crerar", "Lieutenant General Guy Simmonds", "Lieutenant General Andrew McNaughton",
+	//Czechoslovakia - All army, no air force or naval commander's name available
+	"General Ludvik Svoboda", "Brigadier General Jan Golian", "Brigadier General Rudolf Pilfousek",
+	//Finland - All army, no air force or naval commander's name available
+	"Colonel Hjalmar Siilasvuo", "Lieutenant General Karl Lennart Oesch", "Marshal Carl Gustaf Emil Mannerheim",
+	//France - Two Army, no air force commander's name available
+	"Brigadier General Charles de Gaulle", "Marshal Jean de Lattre de Tassigny", "Admiral Francois Darlan",
 	//Germany
 	"Field Marshal Erwin Rommel", "Field Marshal Wolfram Freiherr von Richthofen", "Grand Admiral Karl Donitz",
+	//Greece - Two army, no air force commander's name available
+	"General Napoleon Zervas", "Colonel Stefanos Sarafis", "Vice Admiral Alexandros Sakellariou",
+	//India - All army, no air force or naval commander's name available
+	"Supreme Commander Subhas Chandra Bose", "Captain Lakshmi Sahgal", "Major Mohan Singh Deb",
 	//Italy - Two army, no air force commander's name available
 	"Marshal Pietro Badoglio", "Marshal Giovanni Messe", "Admiral Arturo Riccardi",
 	//Japan - Two navy, no air force commander's name available
 	"General Tomoyuki Yamashita", "Admiral Osami Nagano", "Admiral Chuichi Nagumo",
-	//Thailand - All army, no air force or naval commander's name available
-	"Lieutenant General Prince Arthit Trip-apha", "General Luang Haansongkhram", "Major KhunNimmarnkolayut",
-	//Finland - All army, no air force or naval commander's name available
-	"Colonel Hjalmar Siilasvuo", "Lieutenant General Karl Lennart Oesch", "Marshal Carl Gustaf Emil Mannerheim",
+	//Netherlands - Two navy, no air force commander's name available
+	"Lieutenant General Hein ter Poorten", "Rear Admiral Karel Doorman", "Vice Admiral Conrad Helfrich",
+	//New Zealand - two air force, no naval commander's name available
+	"Lieutenant General 1st Baron Bernard Freyberg", "Marshal Arthur Coningham", "Chief Marshal Keith Park",
+	//Poland - All army, no air force or naval commander's name available
+	"General Wlayslaw Sikorski", "Lieutenant General Tadeusz Bor-Komorowski", "Commander-in-Chief Edward Rydz-Smigly",
+	//Republic of China - All army, no air force or naval commander's name available
+	"General Yan Xishan", "General Chen Cheng", "General Xue Yue",
 	//Romania - All army, no air force or naval commander's name available
 	"Marshal Ion Antonescu", "General Petre Dumitrescu", "Division General Platon Chirnoaga",
 	//Slovakia - All army, no air force or naval commander's name available
 	"Major General Ferdinand Catlos", "General Rudolf Viest", "Brigadier General Jan Golian",
-	//India - All army, no air force or naval commander's name available
-	"Supreme Commander Subhas Chandra Bose", "Captain Lakshmi Sahgal", "Major Mohan Singh Deb",
-	//Burma, Switzerland, Ukraine - All army, no air force or naval commander's name available
-	"Major General Aung San", "General Henri Guisan", "General Roman Shukhevych",
+	//Soviet Union
+	"General Nikolai Vatutin", "Chief Marshal Alexander Novikov", "Admiral Ivan Isakov",
+	//Thailand - All army, no air force or naval commander's name available
+	"Lieutenant General Prince Arthit Trip-apha", "General Luang Haansongkhram", "Major Khunnimmarnkolayut",
+	//United Kingdom
+	"Field Marshal Archibald Wavell", "Chief Marshal Arthur Harris", "Admiral Sir Alfred Pound",
+	//United States
+	"General George Smith Patton Jr.", "General Carl Spaatz", "Admiral Chester William Nimitz", 
+	//Yugoslavia - All army, no air force or naval commander's name available
+	"General Draza Mihajlovic", "Marshal Josip Broz Tito", "Commander Droboslav Jevdevic",
 //+1 internet cookie if you get the references below
 	"Red", "Green", "Blue"
 };
