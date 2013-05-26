@@ -129,7 +129,7 @@ class Warrior{
 		//Inline auxillary functions
 		void Nonconstant_Transform(
 			list<double*>&,              //List of variables to change
-			const list<double>&,         //Values used in change
+			list<double>&,         //Values used in change
 			void (*fptr)(list<double*>::iterator,double) //Function that makes changes
 		);
 	private:
@@ -185,13 +185,13 @@ class Warrior{
 		short available;
 		enum available_bit_flags{
 			ranged_equipped = 1,
-			throwing_equipped = 2,
-			melee_equipped = 4,
+			throwing_equipped = 1<<1,
+			melee_equipped = 1<<2,
 			
-			legs_equipped = 256,
-			arms_equipped = 512,
-			chest_equipped = 1024,
-			head_equipped = 2048
+			legs_equipped = 1<<8,
+			arms_equipped = 1<<9,
+			chest_equipped = 1<<10,
+			head_equipped = 1<<11
 		};
 			//Inventory
 		list<Weapon> __ownedw;

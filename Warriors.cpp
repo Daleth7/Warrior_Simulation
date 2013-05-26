@@ -357,7 +357,7 @@ void Warrior::SetCondition(Condition_t newcondition){
 }
 
 Warrior::Warrior(const string& newname):
-	alive(true), available(false),
+	__alive(true), available(false),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
 		&__mass,      &__height,           &__strength, 
@@ -741,7 +741,7 @@ void Warrior::Check(){
 }
 inline void Nonconstant_Transform(
 	list<double*>& variables,
-	const list<double>& newvalues,
+	list<double>& newvalues,
 	void (*fptr)(list<double*>::iterator,double) 
 ){
 	newvalues.resize(variables.size());
