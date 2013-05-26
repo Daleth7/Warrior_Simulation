@@ -209,3 +209,15 @@ I will be able to work on the class a bunch more tomorrow only got to work on it
 been working on yours all day it seems like =/
 P.S. I currently live in Arizona, USA and the timezone is Arizona-MST(no daylight savings) or GMT-7.
 -Giblit (5/23/13)
+
+Sooner or later I'm going to need the names of some Weapon and Armor types to use in my 
+CraftWarrior function. I currently have placeholders, but there are a lot of them
+scattered throughout my code. Types of ammunition would also be nice.
+Some of the placeholders used in the Warrior class and CraftWarrior function:
+-Weapon_t: an enum for types of weapons
+-Armour_t: an enum for types of armours
+-Ammunition_t: an enum for types of ammunitions
+-NONE: an enum value for both Weapon_t and Armour_t
+There are a bunch more placeholders more specific that you can find in my code. They are all marked by a comment a
+couple lines above.
+~Daleth~
