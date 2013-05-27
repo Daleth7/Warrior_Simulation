@@ -12,7 +12,7 @@ To-Do List:
 --Weapon class
 
 -Daleth:
---Warrior
+--Warrior ( Pending Review )
 
 -Gilbit:
 --Environment class
