@@ -78,18 +78,25 @@ class Warrior{
 		list<double> HealthStatus()const;
 		string Name()const;
 		Condition_t Status()const;
+			//Checks for melee first
+		Weapon EquippedWeapon()const;
+		Weapon EquippedThrowing()const;
+		const list<Armor> EquippedArmor()const;
+		const list<Weapon>& WeaponInventory()const;
+		const list<Armor>& ArmorInventory()const;
 			//Inventory functions
+			//   Returns whether the operation was successful
 			/**Using "Weapon_t" and "Armor_T" as a 
 			//   placeholder for enums because I cannot
 			//   figure out how to implement choices without
 			//   one**/
-		void Equip(const Weapon* =nullptr, const Armor* =nullptr);
-		void Equip_from_Inventory(Weapon_t=NONE);
-		void Unequip();
-		void Unequip(Weapon_t=NONE, Armor_t=NONE)
-		void Store(const Weapon* =nullptr, const Armor* =nullptr);
+		bool Equip(const Weapon& =NONE, const Armor& =NONE);
+		bool Equip_from_Inventory(Weapon_t=NONE,Armour_t=NONE);
+		void Unequip(); //No return because always successful
+		bool Unequip(Weapon_t=NONE, Armor_t=NONE)
+		bool Store(const Weapon& =NONE, const Armor& =NONE);
 			/***Ammunition_t is a current placeholder***/
-		void Store_Amm(Ammunition_t,unsigned);
+		bool Store_Amm(Ammunition_t,unsigned);
 			//In the event that the warrior's attributes are temporarily changed;
 			//Takes in a set of changes and adds those changes to the returned
 			//   Warrior object
@@ -99,12 +106,12 @@ class Warrior{
 			//   random values and no equipment;
 			//   Explicit to avoid implicit calls
 		explicit Warrior(const string&="");
-		Warrior(Attr_Template,const string&);
+		Warrior(Attr_Template,const string&="");
 			//Set attributes manually;
 			//   order follows member double variables;
 			//   0 will indicate attribute value to be 
 			//   randomized
-		Warrior(initializer_list<double>&,const string&);
+		Warrior(initializer_list<double>&,const string&="");
 			//Deal with pointers
 		Warrior(const Warrior&);
 		Warrior& operator=(const Warrior&);
@@ -188,7 +195,7 @@ class Warrior{
 		};
 			//Inventory
 		list<Weapon> __ownedw;
-		list<Armour> __owneda;
+		list<Armor> __owneda;
 			//inventory of ammunitions for each type
 			/**   "Ammunition_t" is a placeholder for an enum**/
 		map<Ammunition_t,unsigned> __available_amm;

@@ -175,8 +175,8 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 	return toreturn;
 }
 /*********************Member functions of the Warrior Class************/
-	//Attack function has placeholders for Equipment_bonus and Target_equipment_bonus variables
-void Warrior::Attack(Warrior& Target, int reaction){
+	/**Attack function has placeholders for Equipment_bonus and Target_equipment_bonus variables**/
+	void Warrior::Attack(Warrior& Target, int reaction){
 	Warrior Tcopy;
 	switch(reaction){
 		case 1:	Tcopy = Target.Defend();        break;
@@ -197,9 +197,9 @@ void Warrior::Attack(Warrior& Target, int reaction){
 			Natrual_damage = __strength*__swiftness*__height*pow(golden_ratio,-6),
 			Equipment_bonus(0), Target_equipment_bonus(0);
 	//Found out what kind of weapon attacker has
-		if(notavailable & melee_equipped || notavailable & throwing_equipped)
+		if(notavailable & Warrior::melee_equipped || notavailable & Warrior::throwing_equipped)
 			Equipment_bonus = __melee.GETDAMAGE() + __throwing.GETDAMAGE();
-		else if(notavailable & ranged_equipped)
+		else if(notavailable & Warrior::ranged_equipped)
 			Equipment_bonus = __ranged.GETDAMAGE();
 	//Figure out which body part of Target takes the blow
 		while(true){
@@ -286,9 +286,9 @@ void Warrior::Attack(Warrior& Target, int reaction){
 		unsigned 
 			Target_natrual_damage = Tcopy.__strength*Tcopy.__swiftness*Tcopy.__height*pow(golden_ratio,-6),
 			Target_weapon_bonus(0);
-		if(Tcopy.notavailable & melee_equipped)
+		if(Tcopy.notavailable & Warrior::melee_equipped)
 			Target_weapon_bonus = Tcopy.__melee.GETDAMAGE();
-		else if(Tcopy.notavailable & ranged_equipped)
+		else if(Tcopy.notavailable & Warrior::ranged_equipped)
 			Target_weapon_bonus = Tcopy.__range.GETDAMAGE();
 		__left_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
 		__right_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
@@ -334,71 +334,256 @@ list<double> HealthStatus()const{
 };
 string Warrior::Name()const{return __name;}
 Condition_t Warrior::Status()const{return __condition;}
-
-void Warrior::Equip(const Weapon* newwep, const Armor* newarm);
-void Warrior::Equip_from_Inventory(Weapon_t choice);
-void Warrior::Unequip();
-void Warrior::Unequip(Weapon_t choice, Armor_t choice)
-void Warrior::Store(const Weapon* newwep, const Armor* newarm);
+Weapon EquippedWeapon()const{
+	if(notavailable & melee_equipped)	return __melee;
+	if(notavailable & ranged_equipped)	return __ranged;
+}
+Weapon EquippedThrowing()const{return __throwing;}
+const list<Armor> EquippedArmor()const{return __equippeda;}
+const list<Weapon>& Warrior::WeaponInventory()const{return __ownedw;}
+const list<Armor>& Warrior::ArmorInventory()const{return __owneda;}
+	/**Lots of placeholders in these inventory functions**/
+bool Warrior::Equip(const Weapon& newwep, const Armor& newarm){
+	bool toreturn(false);
+	switch(newwep.GETTYPE()){
+		case MELEE:
+			if(notavailable & Warrior::melee_equipped){
+				notavailable ^= Warrior::melee_equipped;
+				__melee = newwep;
+			}else __ownedw.push_back(newwep);
+			toreturn = true;
+			break;
+		case THROWING:
+			if(notavailable & Warrior::throwing_equipped){
+				notavailable ^= Warrior::throwing_equipped;
+				__throwing = newwep;
+			}else __ownedw.push_back(newwep);
+			toreturn = true;
+			break;
+		case RANGED:
+			if(notavailable & Warrior::ranged_equipped){
+				notavailable ^= Warrior::ranged_equipped;
+				__ranged = newwep;
+			}else __ownedw.push_back(newwep);
+			toreturn = true;
+			break;
+		default:	break;
+	}
+	switch(newarm.GETTYPE()){
+		case HEAD:
+			if(notavailable & Warrior::head_equipped){
+				notavailable ^= Warrior::head_equipped;
+				__equippeda[HEAD] = newarm;
+			}else __owneda.push_back(newarm);
+			toreturn = true;
+			break;
+		case CHEST:
+			if(notavailable & Warrior::chest_equipped){
+				notavailable ^= Warrior::chest_equipped;
+				__equippeda[CHEST] = newarm;
+			}else __owneda.push_back(newarm);
+			toreturn = true;
+			break;
+		case ARMS:
+			if(notavailable & Warrior::arms_equipped){
+				notavailable ^= Warrior::arms_equipped;
+				__equippeda[ARMS] = newarm;
+			}else __owneda.push_back(newarm);
+			toreturn = true;
+			break;
+		case LEGS:
+			if(notavailable & Warrior::legs_equipped){
+				notavailable ^= Warrior::legs_equipped;
+				__equippeda[LEGS] = newarm;
+			}else __owneda.push_back(newarm);
+			toreturn = true;
+			break;
+		default:	break;
+	}
+	return toreturn;
+}
+bool Warrior::Equip_from_Inventory(Weapon_t choice_w, Armor_t choice_a){
+	Weapon newwep;
+	for(auto iter = __ownedw.begin();; ++iter){
+		if(iter == __ownedw.end())	return false;
+		if(iter->GETTYPE() == choice_w){
+			newwep = *iter;
+			__owned.erase(iter);
+			break;
+		}
+	}
+	switch(choice_w){
+		case MELEE:
+			if(notavailable & melee_equipped)
+				__ownedw.push_back(__melee);
+			__melee = newwep;
+			break;
+		case THROWING:
+			if(notavailable & throwing_equipped)
+				__ownedw.push_back(__throwing);
+			__throwing = newwep;
+			break;
+		case RANGED:
+			if(notavailable & ranged_equipped)
+				__ownedw.push_back(__ranged);
+			__ranged = newwep;
+			break;
+		default:	break;
+	}
+	Armor newarm;
+	for(auto iter = __owneda.begin();; ++iter){
+		if(iter == __owneda.end())	return false;
+		if(iter->GETTYPE() == choice_a){
+			newarm = *iter;
+			__owned.erase(iter);
+			break;
+		}
+	}
+	switch(choice_a){
+		case HEAD:
+			if(notavailable & head_equipped)
+				__owneda.push_back(__equipped[choice_a]);
+			break;
+		case CHEST:
+			if(notavailable & chest_equipped)
+				__owneda.push_back(__equipped[choice_a]);
+			break;
+		case ARMS:
+			if(notavailable & arms_equipped)
+				__owneda.push_back(__equipped[choice_a]);
+			break;
+		case LEGS:
+			if(notavailable & legs_equipped)
+				__owneda.push_back(__equipped[choice_a]);
+			break;
+		default:	break;
+	}
+	__equippeda[choice_a] = newarm;
+}
+void Warrior::Unequip(){
+	if(notavailable & melee_equipped){
+		__ownedw.push_back(__melee);
+		NULLIFY(__melee);
+	}
+	if(notavailable & throwing_equipped){
+		__ownedw.push_back(__throwing);
+		NULLIFY(__throwing);
+	}
+	if(notavailable & ranged_equipped){
+		__ownedw.push_back(__ranged);
+		NULLIFY(__ranged);
+	}
+	if(notavailable & head_equipped){
+		__owneda.push_back(__equippeda[HEAD]);
+		NULLIFY(__equippeda[HEAD]);
+	}
+	if(notavailable & chest_equipped){
+		__owneda.push_back(__equippeda[CHEST]);
+		NULLIFY(__equippeda[CHEST]);
+	}
+	if(notavailable & arms_equipped){
+		__owneda.push_back(__equippeda[ARMS]);
+		NULLIFY(__equippeda[ARMS]);
+	}
+	if(notavailable & legs_equipped){
+		__owneda.push_back(__equippeda[LEGS]);
+		NULLIFY(__equippeda[LEGS]);
+	}
+	notavailable = 0;
+}
+bool Warrior::Unequip(Weapon_t choice_w, Armor_t choice_a){
+	bool toreturn(false);
+	auto FinalCheck = [&](Weapon& this_eqp, list<Weapon>& inv, Warrior::available_bit_flags bflag){
+			if(notavailable & bflag){
+				inv.push_back(this_eqp);
+				NULLIFY(this_eqp);
+				notavailable ^= bflag;
+				toreturn = true;
+			}
+		};
+	switch(choice_w.GETTYPE()){
+		case MELEE:
+			FinalCheck(__melee,__ownedw,Warrior::melee_equipped);
+			break;
+		case THROWING:
+			FinalCheck(__throwing,__ownedw,Warrior::throwing_equipped);
+			break;
+		case RANGED:
+			FinalCheck(__ranged,__ownedw,Warrior::ranged_equipped);
+			break;
+		default:	break;
+	}
+	FinalCheck = [&](Armor& this_eqp, list<Armor>& inv, Warrior::available_bit_flags bflag){
+			if(notavailable & bflag){
+				inv.push_back(this_eqp);
+				Null(this_eqp);
+				notavailable ^= bflag;
+				toreturn = true;
+			}
+		};
+	switch(choice_a.GETTYPE()){
+		case HEAD:
+			FinalCheck(__equippeda[HEAD],__owneda,Warrior::head_equipped);
+			break;
+		case CHEST:
+			FinalCheck(__equippeda[CHEST],__owneda,Warrior::chest_equipped);
+			break;
+		case ARMS:
+			FinalCheck(__equippeda[ARMS],__owneda,Warrior::arms_equipped);
+			break;
+		case LEGS:
+			FinalCheck(__equippeda[LEGS],__owneda,Warrior::legs_equipped);
+			break;
+		default:	break;
+	}
+	return toreturn;
+}
+bool Warrior::Store(const Weapon& newwep, const Armor& newarm){
+	bool toreturn(false);
+	if(newwep.GETTYPE() != NONE){
+		__ownedw.push_back(newwep);
+		toreturn = true;
+	}
+	if(newarm.GETTYPE() != NONE){
+		__owneda.push_back(newarm);
+		toreturn = true;
+	}
+	return toreturn;
+}
+bool Store_Amm(Ammunition_t,unsigned);
 
 Warrior Warrior::Temporary(list<double>& changes){
 	Warrior catalyst = *this;
 	changes.resize(catalyst.Attributes.size() + catalyst.HealthStatus().size());
 	auto iter = changes.begin();
 	__accuracy           += *iter;
-		++iter;
-	__evasion_chance     += *iter;
-		++iter;
-	__intelligence       += *iter;
-		++iter;
-	__mass               += *iter;
-		++iter;
-	__height             += *iter;
-		++iter;
-	__strength           += *iter;
-		++iter;
-	__swiftness          += *iter;
-		++iter;
-	__stamina            += *iter;
-		++iter;
-	__energy_consumption += *iter;
-		++iter;
-	__speed              += *iter;
-		++iter;
-	__mental_fortitude   += *iter;
-		++iter;
-	__amicability        += *iter;
-		++iter;
+	__evasion_chance     += *(++iter);
+	__intelligence       += *(++iter);
+	__mass               += *(++iter);
+	__height             += *(++iter);
+	__strength           += *(++iter);
+	__swiftness          += *(++iter);
+	__stamina            += *(++iter);
+	__energy_consumption += *(++iter);
+	__speed              += *(++iter);
+	__mental_fortitude   += *(++iter);
+	__amicability        += *(++iter);
 	
-	__head               += *iter;
-		++iter;
-	__neck               += *iter;
-		++iter;
-	__chest              += *iter;
-		++iter;
-	__stomach            += *iter;
-		++iter;
-	__groin              += *iter;
-		++iter;
-	__left_shoulder      += *iter;
-		++iter;
-	__right_shoulder     += *iter;
-		++iter;
-	__left_arm           += *iter;
-		++iter;
-	__right_arm          += *iter;
-		++iter;
-	__left_hand          += *iter;
-		++iter;
-	__right_hand         += *iter;
-		++iter;
-	__left_leg           += *iter;
-		++iter;
-	__right_leg          += *iter;
-		++iter;
-	__left_foot          += *iter;
-		++iter;
-	__right_foot         += *iter;
+	__head               += *(++iter);
+	__neck               += *(++iter);
+	__chest              += *(++iter);
+	__stomach            += *(++iter);
+	__groin              += *(++iter);
+	__left_shoulder      += *(++iter);
+	__right_shoulder     += *(++iter);
+	__left_arm           += *(++iter);
+	__right_arm          += *(++iter);
+	__left_hand          += *(++iter);
+	__right_hand         += *(++iter);
+	__left_leg           += *(++iter);
+	__right_leg          += *(++iter);
+	__left_foot          += *(++iter);
+	__right_foot         += *(++iter);
 		
 	Check();
 }
@@ -516,7 +701,7 @@ Warrior::Warrior(const string& newname):
 	__right_foot(d__right_foot)
 {
 		//Set name
-	if(newname.empty())	__name = setnames[ rand()%15 ];
+	if(newname.empty())	__name = setnames[ rand()%name_num ];
 	else __name = newname;
 		//Set attribute values
 	__accuracy           = Generate_Rand_Val(max__accuracy);
@@ -557,7 +742,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	__right_foot(d__right_foot)
 {
 		//Set name
-	if(newname.empty())	__name = setnames[ rand()%15 ];
+	if(newname.empty())	__name = setnames[ rand()%name_num ];
 	else __name = newname;
 	auto Assign = 
 		[](list<double*>::iterator var,double newval){**var = newval;};
@@ -697,7 +882,7 @@ Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
 	__right_foot(d__right_foot)
 {
 		//Set name
-	if(newname.empty())	__name = setnames[ rand()%15 ];
+	if(newname.empty())	__name = setnames[ rand()%name_num ];
 	else __name = newname;
 		//Copy attributes
 	newattr.resize(this->Attributes().size());
@@ -846,33 +1031,33 @@ void Warrior::Check(){
 */		//Check for equipment
 		//Fully capitalized words are placeholders
 	if(
-		(__ranged.TYPE == NONE && notavailable^ranged_equipped) ||
-		(__ranged.TYPE != NONE && notavailable^ranged_equipped == 0)
-	)	notavailable ^= ranged_equipped;
+		(__ranged.TYPE == NONE && notavailable^Warrior::ranged_equipped) ||
+		(__ranged.TYPE != NONE && notavailable^Warrior::ranged_equipped == 0)
+	)	notavailable ^= Warrior::ranged_equipped;
 	if(
-		(__throwing.TYPE == NONE && notavailable^throwing_equipped) ||
-		(__throwing.TYPE != NONE && notavailable^throwing_equipped == 0)
-	)	notavailable ^= throwing_equipped;
+		(__throwing.TYPE == NONE && notavailable^Warrior::throwing_equipped) ||
+		(__throwing.TYPE != NONE && notavailable^Warrior::throwing_equipped == 0)
+	)	notavailable ^= Warrior::throwing_equipped;
 	if(
-		(__melee.TYPE == NONE && notavailable^melee_equipped) ||
-		(__melee.TYPE != NONE && notavailable^melee_equipped == 0)
-	)	notavailable ^= melee_equipped;
+		(__melee.TYPE == NONE && notavailable^Warrior::melee_equipped) ||
+		(__melee.TYPE != NONE && notavailable^Warrior::melee_equipped == 0)
+	)	notavailable ^= Warrior::melee_equipped;
 	if(
-		(__equippeda[LEGS].TYPE == NONE && notavailable^legs_equipped) ||
-		(__equippeda[LEGS].TYPE != NONE && notavailable^legs_equipped == 0)
-	)	notavailable ^= legs_equipped;
+		(__equippeda[LEGS].TYPE == NONE && notavailable^Warrior::legs_equipped) ||
+		(__equippeda[LEGS].TYPE != NONE && notavailable^Warrior::legs_equipped == 0)
+	)	notavailable ^= Warrior::legs_equipped;
 	if(
-		(__equippeda[ARMS].TYPE == NONE && notavailable^arms_equipped) ||
-		(__equippeda[ARMS].TYPE != NONE && notavailable^arms_equipped == 0)
-	)	notavailable ^= arms_equipped;
+		(__equippeda[ARMS].TYPE == NONE && notavailable^Warrior::arms_equipped) ||
+		(__equippeda[ARMS].TYPE != NONE && notavailable^Warrior::arms_equipped == 0)
+	)	notavailable ^= Warrior::arms_equipped;
 	if(
-		(__equippeda[CHEST].TYPE == NONE && notavailable^chest_equipped) ||
-		(__equippeda[CHEST].TYPE != NONE && notavailable^chest_equipped == 0)
-	)	notavailable ^= chest_equipped;
+		(__equippeda[CHEST].TYPE == NONE && notavailable^Warrior::chest_equipped) ||
+		(__equippeda[CHEST].TYPE != NONE && notavailable^Warrior::chest_equipped == 0)
+	)	notavailable ^= Warrior::chest_equipped;
 	if(
-		(__equippeda[HEAD].TYPE == NONE && notavailable^head_equipped) ||
-		(__equippeda[HEAD].TYPE != NONE && notavailable^head_equipped == 0)
-	)	notavailable ^= head_equipped;
+		(__equippeda[HEAD].TYPE == NONE && notavailable^Warrior::head_equipped) ||
+		(__equippeda[HEAD].TYPE != NONE && notavailable^Warrior::head_equipped == 0)
+	)	notavailable ^= Warrior::head_equipped;
 }
 inline void Nonconstant_Transform(
 	list<double*>& variables,
