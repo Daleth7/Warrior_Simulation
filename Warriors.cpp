@@ -17,7 +17,10 @@ using std::initializer_list;
 const double
 	__gravity(9.81),
 	__average_bfat_ratio(0.15),
-	__epsilon(1e-15)
+	__epsilon(1e-15),
+	__hour_to_second(3600),
+	__kilometer_to_meter(1000),
+	golden_ratio(1.6180339887)
 ;
 const std::vector<string> setnames = {
 	"Bobby Jones", "Billy the Kid", "Occam",
@@ -91,10 +94,29 @@ const int	//Maximum values
 	max__swiftness(4),
 		//Compensate for truncation by adding 0.5
 	max__stamina(max__mass*__average_bfat_ratio*(__gravity+0.5)*max__height),
-	max__energy_consumption(85),
+	max__energy_consumption(150),
 	max__speed(15),
 	max__mental_fortitude(100),
-	max__amicability(1)
+	max__amicability(1),
+		//Measured in seconds
+	maximum_battle_time(180)
+;
+const unsigned	//Default hp values
+	d__head(10000),
+	d__neck(9000),
+	d__chest(30000),
+	d__stomach(22500),
+	d__groin(10000),
+	d__left_shoulder(17500),
+	d__right_shoulder(17500),
+	d__left_arm(13500),
+	d__right_arm(13500), 
+	d__left_hand(10000),
+	d__right_hand(10000),
+	d__left_leg(13500),
+	d__right_leg(13500),
+	d__left_foot(10000),
+	d__right_foot(10000)
 ;
 
 bool operator==(const Warrior& lhs,const Warrior& rhs){
@@ -153,6 +175,7 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 	return toreturn;
 }
 /*********************Member functions of the Warrior Class************/
+	//Attack function has placeholders for Equipment_bonus and Target_equipment_bonus variables
 void Warrior::Attack(Warrior& Target, int reaction){
 	Warrior Tcopy;
 	switch(reaction){
@@ -161,19 +184,131 @@ void Warrior::Attack(Warrior& Target, int reaction){
 		case 3:	Tcopy = Target.Run();           break;
 		default:	break;
 	}
-		//Calculate loss in attribute values
-/*****************************************************************************************/
+		//Chance measured in inverse burst 
+		//   multiplied by 1 burst --> rounded ratio
+	int _chance = //Chance that hit was successful
+		(__accuracy*__speed/(__swiftness*__height)
+		- Tcopy.__evasion_chance*Tcopy.__speed/(Tcopy.__swiftness*Tcopy.__height))
+		* __kilometer_to_meter/__hour_to_second;
+		//If successful, calculate damage taken and the recoil damage
+	if(_chance > 0 && rand()%_chance > 0){
+	//Natural strength + bonus from equipment - bonus from target's equipment
+		unsigned 
+			Natrual_damage = __strength*__swiftness*__height*pow(golden_ratio,-6),
+			Equipment_bonus(0), Target_equipment_bonus(0);
+	//Found out what kind of weapon attacker has
+		if(notavailable & melee_equipped || notavailable & throwing_equipped)
+			Equipment_bonus = __melee.GETDAMAGE() + __throwing.GETDAMAGE();
+		else if(notavailable & ranged_equipped)
+			Equipment_bonus = __ranged.GETDAMAGE();
+	//Figure out which body part of Target takes the blow
+		while(true){
+			switch(rand()%Tcopy.HealthStatus().size()){
+				case 0:	//Head
+					if(Target.__head <= 0)	continue;
+					Target_equipment_bonus = __equippeda[HEAD];
+					Target.__head -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 1:	//Neck
+					if(Target.__neck <= 0)	continue;
+					Target_equipment_bonus = __equippeda[HEAD];
+					Target.__neck -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 2:	//Chest
+					if(Target.__chest <= 0)	continue;
+					Target_equipment_bonus = __equippeda[CHEST];
+					Target.__chest -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 3:	//Stomach
+					if(Target.__stomach <= 0)	continue;
+					Target_equipment_bonus = __equippeda[CHEST];
+					Target.__stomach -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 4:	//Groin
+					if(Target.__groin <= 0)	continue;
+					Target_equipment_bonus = __equippeda[CHEST];
+					Target.__groin -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 5:	//Left shoulder
+					if(Target.__left_shoulder <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__left_shoulder -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 6:	//Right shoulder
+					if(Target.__right_shoulder <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__right_shoulder -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 7:	//Left arm
+					if(Target.__left_arm <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__left_arm -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 8:	//Right arm
+					if(Target.__right_arm <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__right_arm -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 9:	//Left hand
+					if(Target.__left_hand <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__left_hand -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 10:	//Right hand
+					if(Target.__right_hand <= 0)	continue;
+					Target_equipment_bonus = __equippeda[ARMS];
+					Target.__right_hand -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 11:	//Left leg
+					if(Target.__left_leg <= 0)	continue;
+					Target_equipment_bonus = __equippeda[LEGS];
+					Target.__left_leg -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 12:	//Right leg
+					if(Target.__right_leg <= 0)	continue;
+					Target_equipment_bonus = __equippeda[LEGS];
+					Target.__right_leg -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 13:	//Left foot
+					if(Target.__left_foot <= 0)	continue;
+					Target_equipment_bonus = __equippeda[LEGS];
+					Target.__left_foot -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+				case 14:	//Right foot
+					if(Target.__right_foot <= 0)	continue;
+					Target_equipment_bonus = __equippeda[LEGS];
+					Target.__right_foot -= Natrual_damage+Equipment_bonus-Target_equipment_bonus;
+					break;
+			}
+			break;
+		}
+			//Now calculate recoil damage
+		unsigned 
+			Target_natrual_damage = Tcopy.__strength*Tcopy.__swiftness*Tcopy.__height*pow(golden_ratio,-6),
+			Target_weapon_bonus(0);
+		if(Tcopy.notavailable & melee_equipped)
+			Target_weapon_bonus = Tcopy.__melee.GETDAMAGE();
+		else if(Tcopy.notavailable & ranged_equipped)
+			Target_weapon_bonus = Tcopy.__range.GETDAMAGE();
+		__left_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+		__right_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+		__left_arm -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+		__right_arm -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+		__left_hand -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+		__right_hand -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+	}
+		//Use up some energy
+	__stamina -= __energy_consumption*(rand()%maximum_battle_time+1)/__hour_to_second;
+	Target.__stamina -=  Target.__energy_consumption*(rand()%maximum_battle_time+1)/__hour_to_second;
 		//Check if the warrior is dead
-	list<double> _Health_ = this->HealthStatus();
-	for(auto iter = _Health_.begin(); iter != _Health_.end(); ++iter){
-		if(*iter == 0)	__alive = false;
-	}
-	_Health_ = Tcopy.HealthStatus();
-	for(auto iter = _Health_.begin(); iter != _Health_.end(); ++iter){
-		if(*iter == 0)	Tcopy.__alive = false;
-	}
-		//Copy back changes
-	Target = Tcopy;
+	if(__stamina <= 0)	__alive = false;
+	if(
+		Target.__stamina <= 0 ||
+		Target.__head <= 0 ||
+		Target.__neck <= 0 ||
+		Target.__chest <= 0 ||
+		Target.__stomach <= 0
+	)	Target.__alive = false;
 }
 Warrior Warrior::Defend();
 Warrior Warrior::Counterattack();
@@ -357,28 +492,28 @@ void Warrior::SetCondition(Condition_t newcondition){
 }
 
 Warrior::Warrior(const string& newname):
-	__alive(true), available(false),
+	__alive(true), notavailable(false),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
 		&__mass,      &__height,           &__strength, 
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(15000),
-	__neck(9000),
-	__chest(30000),
-	__stomach(22500),
-	__groin(10000),
-	__left_shoulder(17500),
-	__right_shoulder(17500),
-	__left_arm(13500),
-	__right_arm(13500), 
-	__left_hand(10000),
-	__right_hand(10000),
-	__left_leg(13500),
-	__right_leg(13500),
-	__left_foot(10000),
-	__right_foot(10000)
+	__head(d__head),
+	__neck(d__neck),
+	__chest(d__chest),
+	__stomach(d__stomach),
+	__groin(d__groin),
+	__left_shoulder(d__left_shoulder),
+	__right_shoulder(d__right_shoulder),
+	__left_arm(d__left_arm),
+	__right_arm(d__right_arm), 
+	__left_hand(d__left_hand),
+	__right_hand(d__right_hand),
+	__left_leg(d__left_leg),
+	__right_leg(d__right_leg),
+	__left_foot(d__left_foot),
+	__right_foot(d__right_foot)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%15 ];
@@ -398,28 +533,28 @@ Warrior::Warrior(const string& newname):
 	__amicability        = Generate_Rand_Val(max__amicability);
 }
 Warrior::Warrior(Attr_Template newattr, const string& newname):
-	__alive(true), available(false),
+	__alive(true), notavailable(false),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
 		&__mass,      &__height,           &__strength, 
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(15000),
-	__neck(9000),
-	__chest(30000),
-	__stomach(22500),
-	__groin(10000),
-	__left_shoulder(17500),
-	__right_shoulder(17500),
-	__left_arm(13500),
-	__right_arm(13500), 
-	__left_hand(10000),
-	__right_hand(10000),
-	__left_leg(13500),
-	__right_leg(13500),
-	__left_foot(10000),
-	__right_foot(10000)
+	__head(d__head),
+	__neck(d__neck),
+	__chest(d__chest),
+	__stomach(d__stomach),
+	__groin(d__groin),
+	__left_shoulder(d__left_shoulder),
+	__right_shoulder(d__right_shoulder),
+	__left_arm(d__left_arm),
+	__right_arm(d__right_arm), 
+	__left_hand(d__left_hand),
+	__right_hand(d__right_hand),
+	__left_leg(d__left_leg),
+	__right_leg(d__right_leg),
+	__left_foot(d__left_foot),
+	__right_foot(d__right_foot)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%15 ];
@@ -538,28 +673,28 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	}
 }
 Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
-	__alive(true), available(false),
+	__alive(true), notavailable(false),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
 		&__mass,      &__height,           &__strength, 
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(15000),
-	__neck(9000),
-	__chest(30000),
-	__stomach(22500),
-	__groin(10000),
-	__left_shoulder(17500),
-	__right_shoulder(17500),
-	__left_arm(13500),
-	__right_arm(13500), 
-	__left_hand(10000),
-	__right_hand(10000),
-	__left_leg(13500),
-	__right_leg(13500),
-	__left_foot(10000),
-	__right_foot(10000)
+	__head(d__head),
+	__neck(d__neck),
+	__chest(d__chest),
+	__stomach(d__stomach),
+	__groin(d__groin),
+	__left_shoulder(d__left_shoulder),
+	__right_shoulder(d__right_shoulder),
+	__left_arm(d__left_arm),
+	__right_arm(d__right_arm), 
+	__left_hand(d__left_hand),
+	__right_hand(d__right_hand),
+	__left_leg(d__left_leg),
+	__right_leg(d__right_leg),
+	__left_foot(d__left_foot),
+	__right_foot(d__right_foot)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%15 ];
@@ -620,7 +755,7 @@ void Warrior::Swap_Var(const Warrior& original){
 	__melee              = original.__melee;
 	__throwing           = original.__throwing;
 	__ranged             = original.__ranged;
-	available            = original.available;
+	notavailable            = original.notavailable;
 	__ownedw             = original.__ownedw;
 	__equippeda          = original.__equippeda;
 	__owneda             = original.__owneda;
@@ -711,33 +846,33 @@ void Warrior::Check(){
 */		//Check for equipment
 		//Fully capitalized words are placeholders
 	if(
-		(__ranged.TYPE == NONE && available^ranged_equipped) ||
-		(__ranged.TYPE != NONE && available^ranged_equipped == 0)
-	)	available ^= ranged_equipped;
+		(__ranged.TYPE == NONE && notavailable^ranged_equipped) ||
+		(__ranged.TYPE != NONE && notavailable^ranged_equipped == 0)
+	)	notavailable ^= ranged_equipped;
 	if(
-		(__throwing.TYPE == NONE && available^throwing_equipped) ||
-		(__throwing.TYPE != NONE && available^throwing_equipped == 0)
-	)	available ^= throwing_equipped;
+		(__throwing.TYPE == NONE && notavailable^throwing_equipped) ||
+		(__throwing.TYPE != NONE && notavailable^throwing_equipped == 0)
+	)	notavailable ^= throwing_equipped;
 	if(
-		(__melee.TYPE == NONE && available^melee_equipped) ||
-		(__melee.TYPE != NONE && available^melee_equipped == 0)
-	)	available ^= melee_equipped;
+		(__melee.TYPE == NONE && notavailable^melee_equipped) ||
+		(__melee.TYPE != NONE && notavailable^melee_equipped == 0)
+	)	notavailable ^= melee_equipped;
 	if(
-		(__equippeda[LEGS].TYPE == NONE && available^legs_equipped) ||
-		(__equippeda[LEGS].TYPE != NONE && available^legs_equipped == 0)
-	)	available ^= legs_equipped;
+		(__equippeda[LEGS].TYPE == NONE && notavailable^legs_equipped) ||
+		(__equippeda[LEGS].TYPE != NONE && notavailable^legs_equipped == 0)
+	)	notavailable ^= legs_equipped;
 	if(
-		(__equippeda[ARMS].TYPE == NONE && available^arms_equipped) ||
-		(__equippeda[ARMS].TYPE != NONE && available^arms_equipped == 0)
-	)	available ^= arms_equipped;
+		(__equippeda[ARMS].TYPE == NONE && notavailable^arms_equipped) ||
+		(__equippeda[ARMS].TYPE != NONE && notavailable^arms_equipped == 0)
+	)	notavailable ^= arms_equipped;
 	if(
-		(__equippeda[CHEST].TYPE == NONE && available^chest_equipped) ||
-		(__equippeda[CHEST].TYPE != NONE && available^chest_equipped == 0)
-	)	available ^= chest_equipped;
+		(__equippeda[CHEST].TYPE == NONE && notavailable^chest_equipped) ||
+		(__equippeda[CHEST].TYPE != NONE && notavailable^chest_equipped == 0)
+	)	notavailable ^= chest_equipped;
 	if(
-		(__equippeda[HEAD].TYPE == NONE && available^head_equipped) ||
-		(__equippeda[HEAD].TYPE != NONE && available^head_equipped == 0)
-	)	available ^= head_equipped;
+		(__equippeda[HEAD].TYPE == NONE && notavailable^head_equipped) ||
+		(__equippeda[HEAD].TYPE != NONE && notavailable^head_equipped == 0)
+	)	notavailable ^= head_equipped;
 }
 inline void Nonconstant_Transform(
 	list<double*>& variables,

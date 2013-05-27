@@ -71,11 +71,6 @@ class Warrior{
 			//int is for the target's reaction:
 			//   defend(1), counterattack(2), run(3),
 			//   or nothing(0)
-			//   -call respective defend/counterattack
-			//   -swap change in stamina or alive variables
-			//   between copy and original objects
-			//   -Check hit points of both warriors and determine
-			//   if the warrior is dead or not
 		void Attack(Warrior&, int=0);
 			//Read-only functions
 		bool Alive()const;
@@ -137,10 +132,10 @@ class Warrior{
 		bool __alive;
 		double
 				//Successful hits per attempt
-				//   measured as a ratio
+				//   measured as a ratio - Successes:attempt
 			__accuracy,
 				//Successful runs per attempt
-				//   measured as a ratio
+				//   measured as a ratio - Successes:attempt
 			__evasion_chance,
 				//IQ
 			__intelligence,
@@ -148,13 +143,11 @@ class Warrior{
 			__mass,
 				//Measured in meters
 			__height,
-				//Newtons(force) delivered per punch
-				//   useful for actions involving thrusting arms
+				//Newtons(force) delivered per "burst"
 			__strength,
-				//How many thrusts delivered per second
+				//How many "bursts" delivered per second
 			__swiftness,
-				//Energy reserve
-				//   measured in Joules
+				//Energy reserve measured in Joules
 			__stamina,
 				//Stamina used up per hour
 				//   measured in Joules/hour
@@ -182,7 +175,7 @@ class Warrior{
 			/***Armour_t is a placeholder**/
 		unordered_map<Armour_t, Armor> __equippeda
 			//Bitarrays to determine which slots are open
-		short available;
+		unsigned short notavailable;
 		enum available_bit_flags{
 			ranged_equipped = 1,
 			throwing_equipped = 1<<1,
