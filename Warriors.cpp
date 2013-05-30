@@ -8,7 +8,6 @@
 #include <string>
 #include <initializer_list>
 #include <vector>
-#include <cstddef>
 
 using std::list;
 using std::string;
@@ -24,7 +23,8 @@ const double
 ;
 const std::vector<string> setnames = {
 	"Bobby Jones", "Billy the Kid", "Occam",
-	"Yoda", "C#", "Parry Hotter", 
+	"Yoda", "Manfred", "Parry Hotter", 
+	"C++", "C#", "C ",
 	"Lola Gitner", "Tammy Roan", "Tommy Dirsk", 
 	"Michael Jackson", "Jack Finley", "Dudette",
 	"Jill Jack", "Ben Doe", "Gregory Ferdinand",
@@ -32,6 +32,9 @@ const std::vector<string> setnames = {
 	"@", "Red Rogue", "Googal Plex",
 	"Hank J. Wimbleton", "Jebus H. Christ", "Tricky the Clown",
 	"Sanford", "Deimos", "The Auditor",
+	"Hyun", "Terkoiz", "Yoyo",
+	"Vladimir Ilyich Ulyanov", "Gavrilo Princip", "Theodore (Teddy) Roosevelt",
+	"Jack the Ripper", "Pew Pew", "Punny Pun Pun",
 	"Giblit", "Filiprei", "Daleth",
 //Real names of former commanders around the WWII period because why the hell not
 //  Country order is alphabetical to avoid bias
@@ -107,16 +110,16 @@ const unsigned	//Default hp values
 	d__chest(30000),
 	d__stomach(22500),
 	d__groin(10000),
-	d__left_shoulder(17500),
-	d__right_shoulder(17500),
+	d__ls(17500),
+	d__rs(17500),
 	d__left_arm(13500),
 	d__right_arm(13500), 
-	d__left_hand(10000),
-	d__right_hand(10000),
+	d__lh(10000),
+	d__rh(10000),
 	d__left_leg(13500),
 	d__right_leg(13500),
-	d__left_foot(10000),
-	d__right_foot(10000)
+	d__lf(10000),
+	d__rf(10000)
 ;
 
 bool operator==(const Warrior& lhs,const Warrior& rhs){
@@ -159,7 +162,6 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 		case W_Template::Sniper:
 			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
 			toreturn.Equip(Sniper_Rifle, Forest_Camoflague);
-			toreturn.Store_Amm(Bullet,75);
 			break;
 		case W_Template::Rogue:
 			toreturn = new Warrior(Attr_Template::Athlete, newname);
@@ -168,7 +170,10 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 		case W_Template::Archer:
 			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
 			toreturn.Equip(Short_Bow, Vest);
-			toreturn.Store_Amm(Arrow, 25);
+			break;
+		case W_Template::Martial_Artist:
+			toreturn = new Warrior(Attr_Template::Zen, newname);
+			toreturn.Equip(Staff, Heavy_Vest);
 			break;
 		default:	return new Warrior(newname);
 	}
@@ -194,7 +199,8 @@ void Warrior::Attack(Warrior& Target, int reaction){
 		//If successful, calculate damage taken and the recoil damage
 	if(_chance > 0 && rand()%_chance > 0){
 	//Natural strength + bonus from equipment - target natrual defense - bonus from target's equipment
-		unsigned 
+		unsigned //natural damage and defense are measured in Watts
+		         //   multiplied by 1 second --> Joule
 			Natrual_damage = __strength*__swiftness*__height*pow(golden_ratio,-6),
 			Target_natural_defense = Tcopy.__strength*Tcopy.__swiftness*Tcopy.__height*pow(golden_ratio,-6)/4,
 			Equipment_bonus(0), Target_equipment_bonus(0);
@@ -417,6 +423,7 @@ bool Warrior::Equip(const Weapon& newwep, const Armor& newarm){
 				notavailable ^= Warrior::ranged_equipped;
 				__ranged = newwep;
 			}else __ownedw.push_back(newwep);
+			__available_amm += newwep.GETDEFAULTAMM();
 			toreturn = true;
 			break;
 		default:	break;
@@ -555,13 +562,13 @@ bool Warrior::Unequip(Weapon_t choice_w, Armor_t choice_a){
 		};
 	switch(choice_w.GETTYPE()){
 		case MELEE:
-			FinalCheck(__melee,__ownedw,Warrior::melee_equipped);
+			(*FinalCheck)(__melee,__ownedw,Warrior::melee_equipped);
 			break;
 		case THROWING:
-			FinalCheck(__throwing,__ownedw,Warrior::throwing_equipped);
+			(*FinalCheck)(__throwing,__ownedw,Warrior::throwing_equipped);
 			break;
 		case RANGED:
-			FinalCheck(__ranged,__ownedw,Warrior::ranged_equipped);
+			(*FinalCheck)(__ranged,__ownedw,Warrior::ranged_equipped);
 			break;
 		default:	break;
 	}
@@ -575,16 +582,16 @@ bool Warrior::Unequip(Weapon_t choice_w, Armor_t choice_a){
 		};
 	switch(choice_a.GETTYPE()){
 		case HEAD:
-			FinalCheck(__equippeda[HEAD],__owneda,Warrior::head_equipped);
+			(*FinalCheck)(__equippeda[HEAD],__owneda,Warrior::head_equipped);
 			break;
 		case CHEST:
-			FinalCheck(__equippeda[CHEST],__owneda,Warrior::chest_equipped);
+			(*FinalCheck)(__equippeda[CHEST],__owneda,Warrior::chest_equipped);
 			break;
 		case ARMS:
-			FinalCheck(__equippeda[ARMS],__owneda,Warrior::arms_equipped);
+			(*FinalCheck)(__equippeda[ARMS],__owneda,Warrior::arms_equipped);
 			break;
 		case LEGS:
-			FinalCheck(__equippeda[LEGS],__owneda,Warrior::legs_equipped);
+			(*FinalCheck)(__equippeda[LEGS],__owneda,Warrior::legs_equipped);
 			break;
 		default:	break;
 	}
@@ -710,6 +717,17 @@ void Warrior::SetCondition(Condition_t newcondition){
 			__mental_fortitude   *= 0.35;
 			__amicability        *= 0.1;
 			break;
+		case Condition_t::Drunk:
+			__accuracy           *= 1/3;
+			__evasion_chance     *= 1.15;
+			__intelligence       *= 0.25;
+			__strength           *= 1.25;
+			__swiftness          *= 1.15;
+			__energy_consumption *= 1.05;
+			__speed              *= 1.15;
+			__mental_fortitude   *= 0.5;
+			__amicability        *= 1.1;
+			break;
 	/*....................................................*/
 		default:
 			auto iter = attr_copy.begin();
@@ -736,21 +754,11 @@ Warrior::Warrior(const string& newname):
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(d__head),
-	__neck(d__neck),
-	__chest(d__chest),
-	__stomach(d__stomach),
-	__groin(d__groin),
-	__left_shoulder(d__left_shoulder),
-	__right_shoulder(d__right_shoulder),
-	__left_arm(d__left_arm),
-	__right_arm(d__right_arm), 
-	__left_hand(d__left_hand),
-	__right_hand(d__right_hand),
-	__left_leg(d__left_leg),
-	__right_leg(d__right_leg),
-	__left_foot(d__left_foot),
-	__right_foot(d__right_foot)
+	__head(d__head),           __neck(d__neck),         __chest(d__chest),
+	__stomach(d__stomach),     __groin(d__groin),       __left_shoulder(d__ls),
+	__right_shoulder(d__rs),   __left_arm(d__left_arm), __right_arm(d__right_arm), 
+	__left_hand(d__lh),        __right_hand(d__rh),     __left_leg(d__left_leg),
+	__right_leg(d__right_leg), __left_foot(d__lf),      __right_foot(d__rf)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%name_num ];
@@ -777,21 +785,11 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(d__head),
-	__neck(d__neck),
-	__chest(d__chest),
-	__stomach(d__stomach),
-	__groin(d__groin),
-	__left_shoulder(d__left_shoulder),
-	__right_shoulder(d__right_shoulder),
-	__left_arm(d__left_arm),
-	__right_arm(d__right_arm), 
-	__left_hand(d__left_hand),
-	__right_hand(d__right_hand),
-	__left_leg(d__left_leg),
-	__right_leg(d__right_leg),
-	__left_foot(d__left_foot),
-	__right_foot(d__right_foot)
+	__head(d__head),           __neck(d__neck),         __chest(d__chest),
+	__stomach(d__stomach),     __groin(d__groin),       __left_shoulder(d__ls),
+	__right_shoulder(d__rs),   __left_arm(d__left_arm), __right_arm(d__right_arm), 
+	__left_hand(d__lh),        __right_hand(d__rh),     __left_leg(d__left_leg),
+	__right_leg(d__right_leg), __left_foot(d__lf),      __right_foot(d__rf)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%name_num ];
@@ -905,6 +903,20 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 			__mental_fortitude = max__mental_fortitude*0.865;
 			__amicability      = max__amicability/2;
 			break;
+		case Attr_Template::Quickster:
+			__accuracy         = max__accuracy*0.65;
+			__evasion_chance   = max__evasion_chance*0.95;
+			__intelligence     = max__intelligence*0.5;
+			__mass             = max__mass*0.475;
+			__height           = max__height*0.5;
+			__strength         = max__strength*0.5875;
+			__swiftness        = max__swiftness;
+			__stamina          = max__stamina*0.8;
+			__energy_consumption= max__energy_consumption*0.65;
+			__speed            = max__speed*0.9125;
+			__mental_fortitude = max__mental_fortitude*0.55;
+			__amicability      = max__amicability/2;
+			break;
 	/*.....................................................*/
 		default:	Warrior();	break;
 	}
@@ -917,21 +929,11 @@ Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
 		&__swiftness, &__stamina,          &__energy_consumption,
 		&__speed,     &__mental_fortitude, &__amicability
 	}),
-	__head(d__head),
-	__neck(d__neck),
-	__chest(d__chest),
-	__stomach(d__stomach),
-	__groin(d__groin),
-	__left_shoulder(d__left_shoulder),
-	__right_shoulder(d__right_shoulder),
-	__left_arm(d__left_arm),
-	__right_arm(d__right_arm), 
-	__left_hand(d__left_hand),
-	__right_hand(d__right_hand),
-	__left_leg(d__left_leg),
-	__right_leg(d__right_leg),
-	__left_foot(d__left_foot),
-	__right_foot(d__right_foot)
+	__head(d__head),           __neck(d__neck),         __chest(d__chest),
+	__stomach(d__stomach),     __groin(d__groin),       __left_shoulder(d__ls),
+	__right_shoulder(d__rs),   __left_arm(d__left_arm), __right_arm(d__right_arm), 
+	__left_hand(d__lh),        __right_hand(d__rh),     __left_leg(d__left_leg),
+	__right_leg(d__right_leg), __left_foot(d__lf),      __right_foot(d__rf)
 {
 		//Set name
 	if(newname.empty())	__name = setnames[ rand()%name_num ];

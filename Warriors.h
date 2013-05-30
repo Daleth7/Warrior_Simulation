@@ -32,11 +32,11 @@ enum class W_Template{
 	Sniper,
 	Rogue,
 	Archer,
+	Martial_Artist,
 	/*...*/
 	None
 };
-	//These are associated with certain,
-	//   set attribute values
+	//These are associated with certain, set attribute values
 enum class Attr_Template{
 	Strongman,
 	Sharpeye,
@@ -45,6 +45,7 @@ enum class Attr_Template{
 	Brainiac,
 	Amateur,
 	Zen,
+	Quickster,
 	/*...*/
 	None
 };
@@ -54,6 +55,7 @@ enum class Condition_t{
 	Broken_Leg,
 	Burned,
 	Enraged,
+	Drunk,
 	/*...*/
 	Healthy
 };
