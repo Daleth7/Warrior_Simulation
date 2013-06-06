@@ -7,20 +7,11 @@
 #ifndef WARRIORS_H
 #define WARRIORS_H
 	
-#include <list>
-#include <map>
+#include <vector>
+#include <array>
 #include <string>
 #include <initializer_list>
-#include <unordered_map>
 
-#include "Weapons.h"
-#include "Armor.h"
-
-using std::list;
-using std::map;
-using std::string;
-using std::initializer_list;
-using std::unordered_map;
 //Strongly typed because these should never 
 //   be compared with primitive types
 	//These are associated with a set of equipment
@@ -62,13 +53,21 @@ enum class Condition_t{
 	//Prototype Warrior, so the associated non-member functions
 	//   can be shown before the class
 class Warrior;
+class Inventory;
 	//Test if two warriors have the same attributes and name
 bool operator==(const Warrior&,const Warrior&);
 	//Base warrior on a template and return a new object on the heap
 Warrior* CraftWarrior(W_Template, const string&="");
 
 class Warrior{
+	static constexpr size_t __num_of_attr(12);
+	using std::vector;
+	using std::array;
+	using std::string;
+	using std::initializer_list;
 	public:
+			//Inventory
+		Inventory* __inventory;
 			//Action functions
 			//int is for the target's reaction:
 			//   defend(1), counterattack(2), run(3),
@@ -76,33 +75,14 @@ class Warrior{
 		void Attack(Warrior&, int=0);
 			//Read-only functions
 		bool Alive()const;
-		list<double> Attributes()const;
-		list<double> HealthStatus()const;
+		array<double,__num_of_attr> Attributes()const;
+		vector<double> HealthStatus()const;
 		string Name()const;
 		Condition_t Status()const;
-			//Checks for melee first
-		Weapon EquippedWeapon()const;
-		Weapon EquippedThrowing()const;
-		const list<Armor> EquippedArmor()const;
-		const list<Weapon>& WeaponInventory()const;
-		const list<Armor>& ArmorInventory()const;
-			//Inventory functions
-			//   Returns whether the operation was successful
-			/**Using "Weapon_t" and "Armor_T" as a 
-			//   placeholder for enums because I cannot
-			//   figure out how to implement choices without
-			//   one**/
-		bool Equip(const Weapon& =NONE, const Armor& =NONE);
-		bool Equip_from_Inventory(Weapon_t=NONE,Armour_t=NONE);
-		void Unequip(); //No return because always successful
-		bool Unequip(Weapon_t=NONE, Armor_t=NONE)
-		bool Store(const Weapon& =NONE, const Armor& =NONE);
-			/***Ammunition_t is a current placeholder***/
-		bool Store_Amm(Ammunition_t,unsigned);
 			//In the event that the warrior's attributes are temporarily changed;
 			//Takes in a set of changes and adds those changes to the returned
 			//   Warrior object
-		Warrior Temporary(list<double>&);
+		Warrior Temporary(array<double>&);
 		void SetCondition(Condition_t);
 			//Initializes attribute variables with
 			//   random values and no equipment;
@@ -132,9 +112,9 @@ class Warrior{
 		void Check();
 		//Inline auxillary functions
 		void Nonconstant_Transform(
-			list<double*>&,              //List of variables to change
-			list<double>&,         //Values used in change
-			void (*fptr)(list<double*>::iterator,double) //Function that makes changes
+			array<double*>&,              //List of variables to change
+			array<double>&,               //Values used in change
+			void (*fptr)(array<double*,__num_of_attr>::iterator,double) //Function that makes changes
 		);
 	private:
 		string __name;
@@ -174,36 +154,11 @@ class Warrior{
 				//   measured as a ratio of persons per group of persons
 			__amicability
 		;
-		const list<double*> __Attr_list__;
-			//Equipped
-		Weapon
-			__melee,
-			__throwing,
-			__ranged
-		;
-			/***Armour_t is a placeholder**/
-		unordered_map<Armour_t, Armor> __equippeda
-			//Bitarrays to determine which slots are open
-		unsigned short notavailable;
-		enum available_bit_flags{
-			ranged_equipped = 1,
-			throwing_equipped = 1<<1,
-			melee_equipped = 1<<2,
-			
-			legs_equipped = 1<<8,
-			arms_equipped = 1<<9,
-			chest_equipped = 1<<10,
-			head_equipped = 1<<11
-		};
-			//Inventory
-		list<Weapon> __ownedw;
-		list<Armor> __owneda;
-			//inventory of ammunitions for each type
-			/**   "Ammunition_t" is a placeholder for an enum**/
-		map<Ammunition_t,unsigned> __available_amm;
+			//Points to above attributes for ease of modification
+		const array<double*,__num_of_attr> __Attr_list__;
 		Condition_t __condition;
 			//Hold a temporary image of past attribute values
-		list<double> attr_copy;
+		array<double,__num_of_attr> attr_copy;
 			//Literal hit points; how many sharp blows a certain body part 
 			//   can sustain before becoming a hinderance; for
 			//   consistency, these will be measured in joules

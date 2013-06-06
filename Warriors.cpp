@@ -1,15 +1,16 @@
+#include "Inventory.h"
 #include "Warriors.h"
+
+#include "Armor.h"
 	//All number literals should be assumed to be a guess 
 	//   based on limited information
 	//   There are placeholder names because they have not been defined
 	//   in other classes/enums; these names will be marked
-#include <list>
 #include <cstdlib>
-#include <string>
-#include <initializer_list>
 #include <vector>
 
-using std::list;
+using std::vector;
+using std::array;
 using std::string;
 using std::initializer_list;
 	//Global constants for use in multiple functions
@@ -149,31 +150,31 @@ Warrior* CraftWarrior(W_Template base, const string& input){
 	switch(base){
 		case W_Template::Knight:
 			toreturn = new Warrior(Attr_Template::Strongman, newname);
-			toreturn.Equip(Broadsword, Iron_Cuirass);
+			toreturn.__inventory.Equip(Broadsword, Iron_Cuirass);
 			break;
 		case W_Template::Demolitionist:
 			toreturn = new Warrior(Attr_Template::Strongman, newname);
-			toreturn.Equip(C_4, Heavy_Vest);
+			toreturn.__inventory.Equip(C_4, Heavy_Vest);
 			break;
 		case W_Template::Medic:
 			toreturn = new Warrior(Attr_Template::Brainiac, newname);
-			toreturn.Equip(First_Aid_Kit, Desert_Camoflague);
+			toreturn.__inventory.Equip(First_Aid_Kit, Desert_Camoflague);
 			break;
 		case W_Template::Sniper:
 			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
-			toreturn.Equip(Sniper_Rifle, Forest_Camoflague);
+			toreturn.__inventory.Equip(Sniper_Rifle, Forest_Camoflague);
 			break;
 		case W_Template::Rogue:
 			toreturn = new Warrior(Attr_Template::Athlete, newname);
-			toreturn.Equip(Knife, Loose_Cloth);
+			toreturn.__inventory.Equip(Knife, Loose_Cloth);
 			break;
 		case W_Template::Archer:
 			toreturn = new Warrior(Attr_Template::Sharpeye, newname);
-			toreturn.Equip(Short_Bow, Vest);
+			toreturn.__inventory.Equip(Short_Bow, Vest);
 			break;
 		case W_Template::Martial_Artist:
 			toreturn = new Warrior(Attr_Template::Zen, newname);
-			toreturn.Equip(Staff, Heavy_Vest);
+			toreturn.__inventory.Equip(Staff, Heavy_Vest);
 			break;
 		default:	return new Warrior(newname);
 	}
@@ -205,108 +206,97 @@ void Warrior::Attack(Warrior& Target, int reaction){
 			Target_natural_defense = Tcopy.__strength*Tcopy.__swiftness*Tcopy.__height*pow(golden_ratio,-6)/4,
 			Equipment_bonus(0), Target_equipment_bonus(0);
 	//Found out what kind of weapon attacker has
-		if(notavailable & Warrior::melee_equipped || notavailable & Warrior::throwing_equipped)
-			Equipment_bonus = __melee.GETDAMAGE() + __throwing.GETDAMAGE();
-		else if(notavailable & Warrior::ranged_equipped){
-		//Make sure there is enough ammunition
-			if(__available_amm[__ranged.GETAMMOTYPE()] < __ranged.GETAMMOUSAGE()){
-				Equipment_bonus = __available_amm[__ranged.GETAMMOTYPE()];
-				__available_amm[__ranged.GETAMMOTYPE()] = 0;
-			}else if(__available_amm[__ranged.GETAMMOTYPE()] > 0){
-				__available_amm -= __ranged.GETAMMOUSAGE();
-				Equipment_bonus = __ranged.GETDAMAGE();
-			}
-		}
+		Equipment_bonus = __inventory.GET_DAMAGE();
 	//Figure out which body part of Target takes the blow
 		while(true){
 			switch(rand()%Tcopy.HealthStatus().size()){
 				case 0:	//Head
 					if(Target.__head <= 0)	continue;
-					Target_equipment_bonus = __equippeda[HEAD];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(HEAD);
 					Target.__head -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 1:	//Neck
 					if(Target.__neck <= 0)	continue;
-					Target_equipment_bonus = __equippeda[HEAD];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(HEAD);
 					Target.__neck -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 2:	//Chest
 					if(Target.__chest <= 0)	continue;
-					Target_equipment_bonus = __equippeda[CHEST];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(CHEST);
 					Target.__chest -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 3:	//Stomach
 					if(Target.__stomach <= 0)	continue;
-					Target_equipment_bonus = __equippeda[CHEST];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(CHEST);
 					Target.__stomach -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 4:	//Groin
 					if(Target.__groin <= 0)	continue;
-					Target_equipment_bonus = __equippeda[CHEST];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(CHEST);
 					Target.__groin -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 5:	//Left shoulder
 					if(Target.__left_shoulder <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__left_shoulder -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 6:	//Right shoulder
 					if(Target.__right_shoulder <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__right_shoulder -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 7:	//Left arm
 					if(Target.__left_arm <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__left_arm -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 8:	//Right arm
 					if(Target.__right_arm <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__right_arm -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 9:	//Left hand
 					if(Target.__left_hand <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__left_hand -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 10:	//Right hand
 					if(Target.__right_hand <= 0)	continue;
-					Target_equipment_bonus = __equippeda[ARMS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(ARMS);
 					Target.__right_hand -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 11:	//Left leg
 					if(Target.__left_leg <= 0)	continue;
-					Target_equipment_bonus = __equippeda[LEGS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(LEGS);
 					Target.__left_leg -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 12:	//Right leg
 					if(Target.__right_leg <= 0)	continue;
-					Target_equipment_bonus = __equippeda[LEGS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(LEGS);
 					Target.__right_leg -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 13:	//Left foot
 					if(Target.__left_foot <= 0)	continue;
-					Target_equipment_bonus = __equippeda[LEGS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(LEGS);
 					Target.__left_foot -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
 				case 14:	//Right foot
 					if(Target.__right_foot <= 0)	continue;
-					Target_equipment_bonus = __equippeda[LEGS];
+					Target_equipment_bonus = Tcopy.__inventory.GET_DEFENSE(LEGS);
 					Target.__right_foot -= Natrual_damage+Equipment_bonus
 						-(Target_equipment_bonus+Target_natural_defense);
 					break;
@@ -315,18 +305,17 @@ void Warrior::Attack(Warrior& Target, int reaction){
 		}
 			//Now calculate recoil damage
 		unsigned 
-			Target_natrual_damage = Tcopy.__strength*Tcopy.__swiftness*Tcopy.__height*pow(golden_ratio,-6),
-			Target_weapon_bonus(0);
-		if(Tcopy.notavailable & Warrior::melee_equipped)
-			Target_weapon_bonus = Tcopy.__melee.GETDAMAGE();
-		else if(Tcopy.notavailable & Warrior::ranged_equipped)
-			Target_weapon_bonus = Tcopy.__range.GETDAMAGE();
-		__left_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
-		__right_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
-		__left_arm -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
-		__right_arm -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
-		__left_hand -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
-		__right_hand -= (Target_natrual_damage + Target_weapon_bonus - __equippeda[ARMS])/12;
+			Target_natrual_damage = Tcopy.__strength*Tcopy.__swiftness
+				*Tcopy.__height*pow(golden_ratio,-6),
+			Target_weapon_bonus(0)
+		;
+		Target_weapon_bonus = Tcopy.__inventory.GET_DAMAGE();
+		__left_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
+		__right_shoulder -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
+		__left_arm -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
+		__right_arm -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
+		__left_hand -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
+		__right_hand -= (Target_natrual_damage + Target_weapon_bonus - __inventory.__equippeda[ARMS])/12;
 	}
 		//Use up some energy
 	__stamina -= 2*__energy_consumption*(rand()%maximum_battle_time+1)/__hour_to_second;
@@ -373,7 +362,7 @@ Warrior Warrior::Run(){
 }
 
 bool Warrior::Alive()const{return __alive;}
-list<double> Warrior::Attributes()const{
+array<double,__num_of_attr> Warrior::Attributes()const{
 	return {
 		__accuracy, __evasion_chance, __intelligence,
 		__mass, __height, __strength, 
@@ -381,7 +370,7 @@ list<double> Warrior::Attributes()const{
 		__speed, __mental_fortitude, __amicability
 	};
 }
-list<double> HealthStatus()const{
+array<double,__num_of_attr> HealthStatus()const{
 	return {
 		__head, __neck, __chest,
 		__stomach, __groin, __left_shoulder,
@@ -392,226 +381,7 @@ list<double> HealthStatus()const{
 };
 string Warrior::Name()const{return __name;}
 Condition_t Warrior::Status()const{return __condition;}
-Weapon EquippedWeapon()const{
-	if(notavailable & Warrior::melee_equipped)	return __melee;
-	if(notavailable & Warrior::ranged_equipped)	return __ranged;
-}
-Weapon EquippedThrowing()const{return __throwing;}
-const list<Armor> EquippedArmor()const{return __equippeda;}
-const list<Weapon>& Warrior::WeaponInventory()const{return __ownedw;}
-const list<Armor>& Warrior::ArmorInventory()const{return __owneda;}
-	/**Lots of placeholders in these inventory functions**/
-bool Warrior::Equip(const Weapon& newwep, const Armor& newarm){
-	bool toreturn(false);
-	switch(newwep.GETTYPE()){
-		case MELEE:
-			if(notavailable & Warrior::melee_equipped){
-				notavailable ^= Warrior::melee_equipped;
-				__melee = newwep;
-			}else __ownedw.push_back(newwep);
-			toreturn = true;
-			break;
-		case THROWING:
-			if(notavailable & Warrior::throwing_equipped){
-				notavailable ^= Warrior::throwing_equipped;
-				__throwing = newwep;
-			}else __ownedw.push_back(newwep);
-			toreturn = true;
-			break;
-		case RANGED:
-			if(notavailable & Warrior::ranged_equipped){
-				notavailable ^= Warrior::ranged_equipped;
-				__ranged = newwep;
-			}else __ownedw.push_back(newwep);
-			__available_amm += newwep.GETDEFAULTAMM();
-			toreturn = true;
-			break;
-		default:	break;
-	}
-	switch(newarm.GETTYPE()){
-		case HEAD:
-			if(notavailable & Warrior::head_equipped){
-				notavailable ^= Warrior::head_equipped;
-				__equippeda[HEAD] = newarm;
-			}else __owneda.push_back(newarm);
-			toreturn = true;
-			break;
-		case CHEST:
-			if(notavailable & Warrior::chest_equipped){
-				notavailable ^= Warrior::chest_equipped;
-				__equippeda[CHEST] = newarm;
-			}else __owneda.push_back(newarm);
-			toreturn = true;
-			break;
-		case ARMS:
-			if(notavailable & Warrior::arms_equipped){
-				notavailable ^= Warrior::arms_equipped;
-				__equippeda[ARMS] = newarm;
-			}else __owneda.push_back(newarm);
-			toreturn = true;
-			break;
-		case LEGS:
-			if(notavailable & Warrior::legs_equipped){
-				notavailable ^= Warrior::legs_equipped;
-				__equippeda[LEGS] = newarm;
-			}else __owneda.push_back(newarm);
-			toreturn = true;
-			break;
-		default:	break;
-	}
-	return toreturn;
-}
-bool Warrior::Equip_from_Inventory(Weapon_t choice_w, Armor_t choice_a){
-	Weapon newwep;
-	for(auto iter = __ownedw.begin();; ++iter){
-		if(iter == __ownedw.end())	return false;
-		if(iter->GETTYPE() == choice_w){
-			newwep = *iter;
-			__owned.erase(iter);
-			break;
-		}
-	}
-	switch(choice_w){
-		case MELEE:
-			if(notavailable & Warrior::melee_equipped)
-				__ownedw.push_back(__melee);
-			__melee = newwep;
-			break;
-		case THROWING:
-			if(notavailable & Warrior::throwing_equipped)
-				__ownedw.push_back(__throwing);
-			__throwing = newwep;
-			break;
-		case RANGED:
-			if(notavailable & Warrior::ranged_equipped)
-				__ownedw.push_back(__ranged);
-			__ranged = newwep;
-			break;
-		default:	break;
-	}
-	Armor newarm;
-	for(auto iter = __owneda.begin();; ++iter){
-		if(iter == __owneda.end())	return false;
-		if(iter->GETTYPE() == choice_a){
-			newarm = *iter;
-			__owned.erase(iter);
-			break;
-		}
-	}
-	switch(choice_a){
-		case HEAD:
-			if(notavailable & Warrior::head_equipped)
-				__owneda.push_back(__equipped[choice_a]);
-			break;
-		case CHEST:
-			if(notavailable & Warrior::chest_equipped)
-				__owneda.push_back(__equipped[choice_a]);
-			break;
-		case ARMS:
-			if(notavailable & Warrior::arms_equipped)
-				__owneda.push_back(__equipped[choice_a]);
-			break;
-		case LEGS:
-			if(notavailable & Warrior::legs_equipped)
-				__owneda.push_back(__equipped[choice_a]);
-			break;
-		default:	break;
-	}
-	__equippeda[choice_a] = newarm;
-}
-void Warrior::Unequip(){
-	if(notavailable & Warrior::melee_equipped){
-		__ownedw.push_back(__melee);
-		NULLIFY(__melee);
-	}
-	if(notavailable & Warrior::throwing_equipped){
-		__ownedw.push_back(__throwing);
-		NULLIFY(__throwing);
-	}
-	if(notavailable & Warrior::ranged_equipped){
-		__ownedw.push_back(__ranged);
-		NULLIFY(__ranged);
-	}
-	if(notavailable & Warrior::head_equipped){
-		__owneda.push_back(__equippeda[HEAD]);
-		NULLIFY(__equippeda[HEAD]);
-	}
-	if(notavailable & Warrior::chest_equipped){
-		__owneda.push_back(__equippeda[CHEST]);
-		NULLIFY(__equippeda[CHEST]);
-	}
-	if(notavailable & Warrior::arms_equipped){
-		__owneda.push_back(__equippeda[ARMS]);
-		NULLIFY(__equippeda[ARMS]);
-	}
-	if(notavailable & Warrior::legs_equipped){
-		__owneda.push_back(__equippeda[LEGS]);
-		NULLIFY(__equippeda[LEGS]);
-	}
-	notavailable = 0;
-}
-bool Warrior::Unequip(Weapon_t choice_w, Armor_t choice_a){
-	bool toreturn(false);
-	auto FinalCheck = [&](Weapon& this_eqp, list<Weapon>& inv, Warrior::available_bit_flags bflag){
-			if(notavailable & bflag){
-				inv.push_back(this_eqp);
-				NULLIFY(this_eqp);
-				notavailable ^= bflag;
-				toreturn = true;
-			}
-		};
-	switch(choice_w.GETTYPE()){
-		case MELEE:
-			(*FinalCheck)(__melee,__ownedw,Warrior::melee_equipped);
-			break;
-		case THROWING:
-			(*FinalCheck)(__throwing,__ownedw,Warrior::throwing_equipped);
-			break;
-		case RANGED:
-			(*FinalCheck)(__ranged,__ownedw,Warrior::ranged_equipped);
-			break;
-		default:	break;
-	}
-	FinalCheck = [&](Armor& this_eqp, list<Armor>& inv, Warrior::available_bit_flags bflag){
-			if(notavailable & bflag){
-				inv.push_back(this_eqp);
-				Null(this_eqp);
-				notavailable ^= bflag;
-				toreturn = true;
-			}
-		};
-	switch(choice_a.GETTYPE()){
-		case HEAD:
-			(*FinalCheck)(__equippeda[HEAD],__owneda,Warrior::head_equipped);
-			break;
-		case CHEST:
-			(*FinalCheck)(__equippeda[CHEST],__owneda,Warrior::chest_equipped);
-			break;
-		case ARMS:
-			(*FinalCheck)(__equippeda[ARMS],__owneda,Warrior::arms_equipped);
-			break;
-		case LEGS:
-			(*FinalCheck)(__equippeda[LEGS],__owneda,Warrior::legs_equipped);
-			break;
-		default:	break;
-	}
-	return toreturn;
-}
-bool Warrior::Store(const Weapon& newwep, const Armor& newarm){
-	bool toreturn(false);
-	if(newwep.GETTYPE() != NONE){
-		__ownedw.push_back(newwep);
-		toreturn = true;
-	}
-	if(newarm.GETTYPE() != NONE){
-		__owneda.push_back(newarm);
-		toreturn = true;
-	}
-	return toreturn;
-}
-void Store_Amm(Ammunition_t newammo, unsigned newammount){__available_amm[newammo] += newammount;}
-
-Warrior Warrior::Temporary(list<double>& changes){
+Warrior Warrior::Temporary(array<double,__num_of_attr>& changes){
 	Warrior catalyst = *this;
 	changes.resize(catalyst.Attributes.size() + catalyst.HealthStatus().size());
 	auto iter = changes.begin();
@@ -662,7 +432,7 @@ void Warrior::SetCondition(Condition_t newcondition){
 	}
 		//Stage two: determine what values to change
 	auto Multiply_Assign = 
-		[](list<double*>::iterator var, double product){**var *= product;};
+		[](array<double*,__num_of_attr>::iterator var, double product){**var *= product;};
 	switch(newcondition){
 		case Condition_t::Cold:
 			NonConstant_Transform(
@@ -747,6 +517,7 @@ void Warrior::SetCondition(Condition_t newcondition){
 }
 
 Warrior::Warrior(const string& newname):
+	__inventory(new Inventory),
 	__alive(true), notavailable(0),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
@@ -778,6 +549,7 @@ Warrior::Warrior(const string& newname):
 	__amicability        = Generate_Rand_Val(max__amicability);
 }
 Warrior::Warrior(Attr_Template newattr, const string& newname):
+	__inventory(new Inventory),
 	__alive(true), notavailable(0),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
@@ -795,7 +567,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	if(newname.empty())	__name = setnames[ rand()%name_num ];
 	else __name = newname;
 	auto Assign = 
-		[](list<double*>::iterator var,double newval){**var = newval;};
+		[](array<double*,__num_of_attr>::iterator var,double newval){**var = newval;};
 	switch(newattr){
 		case Attr_Template::Strongman:
 			Nonconstant_Transform(
@@ -922,6 +694,7 @@ Warrior::Warrior(Attr_Template newattr, const string& newname):
 	}
 }
 Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
+	__inventory(new Inventory),
 	__alive(true), notavailable(0),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
@@ -940,7 +713,7 @@ Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
 	else __name = newname;
 		//Copy attributes
 	newattr.resize(this->Attributes().size());
-	auto Assign = [](list<double*>::iterator var,double newval){**var = newval;};
+	auto Assign = [](array<double*,__num_of_attr>::iterator var,double newval){**var = newval;};
 	Nonconstant_Transform(__Attr_list__, newattr, Assign);
 /*	auto iter = newattr.begin();
 	__accuracy           = *iter;
@@ -959,6 +732,7 @@ Warrior::Warrior(initializer_list<double>& newattr, const string& newname):
 	Check();
 }
 Warrior::Warrior(const Warrior& original):
+	__inventory(new Inventory),
 	__Attr_list__({
 		&__accuracy,  &__evasion_chance,   &__intelligence,
 		&__mass,      &__height,           &__strength, 
@@ -971,12 +745,13 @@ Warrior& Warrior::operator=(const Warrior& original){
 	return *this;
 }
 
-Warrior::~Warrior(){}
+Warrior::~Warrior(){delete __inventory;}
 
 double Warrior::Generate_Rand_Val(const int& max_value){
 	return max_value - rand()%max_value - double(rand()%RAND_MAX)/RAND_MAX;
 }
 void Warrior::Swap_Var(const Warrior& original){
+	*__inventory         = *(original.__inventory);
 	__name               = original.__name;
 	__alive              = original.__alive;
 	__accuracy           = original.__accuracy;
@@ -1020,7 +795,7 @@ void Warrior::Swap_Var(const Warrior& original){
 void Warrior::Check(){
 		//Check if the attribute values are in the correct range
 	auto Boundary_Checker = 
-		[](list<double*>::iterator var, double maximum){
+		[](array<double*,__num_of_attr>::iterator var, double maximum){
 			if(**var > maximum - __epsilon)
 				**var = maximum - 2*__epsilon;
 			else if(**var < __epsilon)
@@ -1114,9 +889,9 @@ void Warrior::Check(){
 	)	notavailable ^= Warrior::head_equipped;
 }
 inline void Nonconstant_Transform(
-	list<double*>& variables,
-	list<double>& newvalues,
-	void (*fptr)(list<double*>::iterator,double) 
+	array<double*>& variables,
+	array<double>& newvalues,
+	void (*fptr)(array<double*,__num_of_attr>::iterator,double) 
 ){
 	newvalues.resize(variables.size());
 	auto iter = variables.begin();
